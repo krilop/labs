@@ -1,15 +1,17 @@
 #include<stdio.h>
 int main() {
-    float side, volume, square;
+    float side;
+    float volume;
+    float square;
     printf("input num:");
-    
-    if (scanf_s("%f", &side)==1 && side >= 0)
+    while(scanf_s("%f", &side)==1 && side >= 0||getchar()!='\n')
     {
-        volume = side * side * side;
-        square = side * side * 4;
-        printf("Volume of cube with side %f = %.4f\n", side, volume);
-        printf("Side surface area of a cube with side %f = %.4f\n", side, square);
+        printf("Uncorrect input");
+        rewind(stdin);
     }
-    else printf("Uncorrect input");
+    volume = side * side * side;
+    square = side * side * 4;
+    printf("Volume of cube with side %f = %.4f\n", side, volume);
+    printf("Side surface area of a cube with side %f = %.4f\n", side, square);
     return 0;
 }

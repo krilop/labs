@@ -20,7 +20,6 @@ int main()
 		inputSquareMatr(arr, plength);
 		printMatr(arr, plength);
 		//решение задачи
-
 		partOneOfTask(arr, plength);
 		//вторая часть задачи
 		partTwoOfTask(arr, plength);

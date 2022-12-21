@@ -1,6 +1,10 @@
 #ifndef Functions_H
 #define Functions_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 void reset(int *reset);
 
 void chooseTask(int *choice);

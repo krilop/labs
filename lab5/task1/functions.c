@@ -23,11 +23,10 @@ void deleteEven(int* arr, int* length)
 {
 	for (int i = 0; i < *length; i++)
 		if (*(arr+i)%2==0)
-		{
-			shiftArray(arr, length, i);
-			i--;
-		}
-	
+        {
+            shiftArray(arr, length, i);
+            i--;
+        }
 }
 void shiftArray(int* arr, int* length, int j)
 {
@@ -38,9 +37,7 @@ void shiftArray(int* arr, int* length, int j)
 void printArray(int* arr, int length)
 {
 	for (int i = 0; i < length; i++)
-	{
 		printf("%d\t",*(arr+i));
-	}
 	printf("\n");
 }
 void resetApp(int* reset)

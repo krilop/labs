@@ -13,9 +13,7 @@ int** memory(int N)
 	int** mas;
 	mas = (int**)calloc(N, sizeof(int*));
 	for (int i = 0; i < N; i++)
-	{
 		mas[i] = (int*)calloc(N, sizeof(int)); //*(mas + i)
-	}
 	return mas;
 }
 void inputSquareMatr(int** mas, int* N)
@@ -47,9 +45,7 @@ void printMatr(int** mas, int* length)
 	for (int i = 0; i < *length; i++)
 	{
 		for (int j = 0; j < *length; j++)
-		{
 			printf("%d\t", *(*(mas + i) + j));
-		}
 		printf("\n");
 	}
 }

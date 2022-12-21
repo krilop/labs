@@ -1,7 +1,6 @@
 #include "header.h"
 void inputLengthOfArray(int* length)
 {
-	
 	while (scanf_s("%d", length) != 1 || *length < 1 || *length > 100 || getchar() != '\n')
 	{
 		printf("Error! Try again\n");
@@ -55,9 +54,7 @@ void printArr(int** arr, int string)
 	for (int i = 0; i < string; i++)
 	{
 		for (int j = 0; *(*(arr + i) + j) != 0; j++)
-		{
 			printf("%d\t", *(*(arr + i) + j));
-		}
 		printf("\n");
 	}
 }
@@ -65,10 +62,7 @@ void minimum(int** arr, int string, int* minOfSum)
 {
 	int min=0;
 	for (int i = 0; *(*arr + i) != 0; i++)
-	{
 		min += *(*arr + i);
-	}
-
 	for (int i = 0; i < string; i++)
 	{
 		int sum = 0;
@@ -82,7 +76,6 @@ void minimum(int** arr, int string, int* minOfSum)
 
 void reset(int* reset)
 {
-	
 	while (scanf_s("%d", reset) != 1 || *reset != 1 && *reset != 0 || getchar() != '\n')
 	{
 		printf("Error! Try again\n");

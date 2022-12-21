@@ -1,6 +1,5 @@
 #ifndef Functions_H
 #define Functions_H
-#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,4 +19,4 @@ int productOfNegativeElements(int **arr, int numOfString, int lengthOfString);
 
 void mergeSort(int **arr, int left, int right, int lengthOfString);
 
-#endif Functions_H
+#endif

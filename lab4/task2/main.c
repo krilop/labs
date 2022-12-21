@@ -32,11 +32,7 @@ int main()
 		}
 		if (indOfColZero > -1)
 			for (int i = 0; i < col; i++)
-			{
 				array1[indOfColZero][i] *= -1;
-
-			}
-
 		printf("result:\n");
 		for (int i = 0; i < row; i++)
 		{

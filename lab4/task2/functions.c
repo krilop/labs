@@ -1,7 +1,6 @@
 #include "header.h"
 void inputLengthOfArray(int* length)
 {
-	
 	while (scanf_s("%d", length) != 1 || *length < 1 || *length > 100 || getchar() != '\n')
 	{
 		printf("Error! Try again\n");
@@ -13,9 +12,7 @@ int** memory(int N)
 	int** mas;
 	mas = (int**)calloc(N, sizeof(int*));
 	for (int i = 0; i < N; i++)
-	{
 		mas[i] = (int*)calloc(N, sizeof(int)); //*(mas + i)
-	}
 	return mas;
 }
 void inputMatr(int** mas, int* row, int* col)
@@ -47,9 +44,7 @@ void printMatr(int** mas, int* row, int* col)
 	for (int i = 0; i < *row; i++)
 	{
 		for (int j = 0; j < *col; j++)
-		{
 			printf("%d\t", *(*(mas + i) + j));
-		}
 		printf("\n");
 	}
 }

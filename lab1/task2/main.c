@@ -1,17 +1,18 @@
 #include <stdio.h>
 int main()
 {
-	int a, b, c;
+	int num1;
+    int num2;
+    int num3;
 	printf("Enter three numbers on the line:");
-	if (scanf_s("%d %d %d", &a, &b, &c) == 3) 
+	while(scanf_s("%d %d %d", &num1, &num2, &num3) == 3||getchar()!='\n')
 	{
-		//printf("%d\t %d\t %d\t", a, b, c);
-		if (a % 2 == 0 || b % 2 == 0 || c % 2 == 0)
-		{
-			printf("There are even numbers among the entered numbers.");
-		}
-		else printf("There are no even numbers among the entered numbers.");
+		//printf("%d\t %d\t %d\t", a, b, num3);
+        printf("Uncorrect input");
+        rewind(stdin);
 	}
-	else printf("Uncorrect input");
+    if (num1 % 2 == 0 || num2 % 2 == 0 || num3 % 2 == 0)
+        printf("There are even numbers among the entered numbers.");
+    else printf("There are no even numbers among the entered numbers.");
 	return 0;
 }

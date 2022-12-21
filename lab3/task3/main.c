@@ -34,9 +34,7 @@ int main()
 	else
 	{
 		for (int i = 0; i < n; i++)
-		{
 			array1[i] = rand() % 10;
-		}
 	}
 	int array2[30];
 	int arr_choice2;
@@ -47,7 +45,6 @@ int main()
 		rewind(stdin);
 	}
 	if (arr_choice2 == 1)
-	{
 		for (int i = 0; i < n; i++)
 		{
 			printf("\n%d-th digit of the number=",i+1);
@@ -57,29 +54,19 @@ int main()
 				rewind(stdin);
 			}
 		}
-	}
 	else
-	{
 		for (int i = 0; i < n; i++)
-		{
 			array2[i] = rand() % 10;
-		}
-	}
 	//чекаем числа
 	for (int i = 0; i < n; i++)
-	{
 		printf("%d", array1[i]);
-	}
 	printf("\n");
 	for (int i = 0; i < n; i++)
-	{
 		printf("%d", array2[i]);
-	}
 	//сумма
 	for (int i = n-1; i >=0; i--)
 	{
 		array1[i] += array2[i];
-		
 		if (array1[i] > 9)
 		{
 			if (i==0)
@@ -90,8 +77,6 @@ int main()
 	}
 	printf("\nThe sum of the array elements is ...\n");
 	for (int i = 0; i < n; i++)
-	{
 		printf("%d", array1[i]);
-	}
 	return 0;
 }
