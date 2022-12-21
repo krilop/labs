@@ -13,16 +13,15 @@ int main()
 	{
 		srand(time(NULL));
 		int length;
-		int* plength = &length;
 		int** arr;
-		inputLengthOfArray(plength);
+		inputLengthOfArray(&length);
 		arr = memory(100);
-		inputSquareMatr(arr, plength);
-		printMatr(arr, plength);
+		inputSquareMatr(arr, length);
+		printMatr(arr, length);
 		//решение задачи
-		partOneOfTask(arr, plength);
+		partOneOfTask(arr, length);
 		//вторая часть задачи
-		partTwoOfTask(arr, plength);
+		partTwoOfTask(arr, length);
 		tryToEnd(&end);
 	}
 	return 0;

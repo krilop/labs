@@ -19,7 +19,7 @@ int **memory(int N)
 		mas[i] = (int*)calloc(N, sizeof(int)); //*(mas + i)
 	return mas;
 }
-void inputSquareMatr(int** mas, int* N)
+void inputSquareMatr(int** mas, int N)
 {
 	srand(time(NULL));
 	int choiceOfInput;
@@ -29,8 +29,8 @@ void inputSquareMatr(int** mas, int* N)
 		printf("Error! Try again\n");
 		rewind(stdin);
 	}
-	for (int i = 0; i < *N; i++)
-		for (int j = 0; j < *N; j++)
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
 			if (choiceOfInput == 1)
 				*(* (mas + i) + j) = rand() % 201 - 100;
 			else
@@ -43,24 +43,24 @@ void inputSquareMatr(int** mas, int* N)
 				}
 			}		
 }
-void printMatr(int **mas, int *length)
+void printMatr(int **mas, int length)
 {
-	for (int i = 0; i < *length; i++)
+	for (int i = 0; i < length; i++)
 	{
-		for (int j = 0; j < *length; j++)
+		for (int j = 0; j < length; j++)
 			printf("%d\t", *(*(mas + i) + j));
 		printf("\n");
 	}
 }
 
 
-void partOneOfTask(int** mas,int* N)
+void partOneOfTask(int** mas,int N)
 {
 	int flagForNegative = 0;
 	int sum = 0;
-	for (int i = 0; i < *N; i++)
+	for (int i = 0; i < N; i++)
 	{
-		for (int j = 0; j < *N; j++)
+		for (int j = 0; j < N; j++)
 			if (*(*(mas + j) + i) < 0)
 			{
 				flagForNegative = 1;
@@ -71,10 +71,10 @@ void partOneOfTask(int** mas,int* N)
 			flagForNegative = 0;
 			continue;
 		}
-		for (int j = 0; j < *N; j++)
+		for (int j = 0; j < N; j++)
 		{
 			sum += *(*(mas + j) + i);
-			if (j == *N - 1)
+			if (j == N - 1)
 			{
 				printf("sum of column %d = %d\n", i + 1, sum);
 				sum = 0;
@@ -83,34 +83,34 @@ void partOneOfTask(int** mas,int* N)
 	}
 }
 
-void partTwoOfTask(int** mas, int* N)
+void partTwoOfTask(int** mas, int N)
 {
-	for (int i = 0; i < *N; i++)
-		for (int j = 0; j < *N; j++)
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
 			if (*(*(mas + i) + j) < 0)
 				*(*(mas + i) + j) *= -1;
 	int num;
 	int arrayOfSum[100];
-	for (int i = 0; i < *N*2 - 1; i++)
+	for (int i = 0; i < N*2 - 1; i++)
 		arrayOfSum[i] = 0;
-	for (int j = 0; j < *N - 1; j++)
+	for (int j = 0; j < N - 1; j++)
 	{
 		num = j;
 		for (int i = 0; num - i >= 0; i++)
 			arrayOfSum[j] += mas[num - i][i];
 	}
-	num = *N - 1;
+	num = N - 1;
 	for (int i = 0; num - i >= 0; i++)
-		arrayOfSum[*N - 1] += mas[num - i][i];
+		arrayOfSum[N - 1] += mas[num - i][i];
 
-	for (int j = *N - 1; j > 0; j--)
+	for (int j = N - 1; j > 0; j--)
 	{
-		num = *N - j;
-		for (int i = 0; num + i < *N; i++)
-			arrayOfSum[*N*2 - j - 1] += mas[num + i][*N - i - 1];
+		num = N - j;
+		for (int i = 0; num + i < N; i++)
+			arrayOfSum[N*2 - j - 1] += mas[num + i][N - i - 1];
 	}
 	int min = arrayOfSum[0];
-	for (int i = 0; i < *N*2 - 1; i++)
+	for (int i = 0; i < N*2 - 1; i++)
 		if (arrayOfSum[i] < min)
 			min = arrayOfSum[i];
 	printf("minimum of diagonals : %d\n", min);
