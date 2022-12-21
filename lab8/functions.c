@@ -16,9 +16,7 @@ void printArray(char **arr, int howManyStrings)
 void deleteFirstString(char **arr, int howManyStrings)
 {
     for (int i = 0; i < howManyStrings - 1; i++)
-    {
         *(arr + i) = *(arr + i + 1);
-    }
 }
 
 int getLength(char **s, int posOfString)
@@ -50,7 +48,6 @@ void merge(char **arr, int first, int last)
             *(tmp + j) = *(arr + end);
             end++;
         }
-
     //возвращение результата в список
     for (j = first; j <= last; j++)
         *(arr + j) = *(tmp + j);
@@ -59,12 +56,10 @@ void merge(char **arr, int first, int last)
 //рекурсивная процедура сортировки
 void mergeSort(char **arr, int first, int last)
 {
+    if (first < last)
     {
-        if (first < last)
-        {
-            mergeSort(arr, first, (first + last) / 2); //сортировка левой части
-            mergeSort(arr, (first + last) / 2 + 1, last); //сортировка правой части
-            merge(arr, first, last); //слияние двух частей
-        }
+        mergeSort(arr, first, (first + last) / 2); //сортировка левой части
+        mergeSort(arr, (first + last) / 2 + 1, last); //сортировка правой части
+        merge(arr, first, last); //слияние двух частей
     }
 };
