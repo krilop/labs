@@ -91,6 +91,9 @@ void mergeSort(int **arr, int left, int right, int lengthOfString)
     // переписываем сформированную последовательность в исходный массив
     for (int step = 0; step < right - left + 1; step++)
         *(arr + left + step) = *(tmp + step);
+    for (int k = 0; k < right; k++)
+        free(tmp[k]);
+    free(tmp);
 }
 
 void printProductOfStr(int **arr, int str, int col)
