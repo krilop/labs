@@ -91,6 +91,8 @@ void partTwoOfTask(int** mas, int N)
 				*(*(mas + i) + j) *= -1;
 	int num;
 	int arrayOfSum[100];
+    for (int i = 0; i < 100; ++i)
+        arrayOfSum[i]=0;
 	for (int i = 0; i < N*2 - 1; i++)
 		arrayOfSum[i] = 0;
 	for (int j = 0; j < N - 1; j++)

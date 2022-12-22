@@ -18,7 +18,7 @@ int main()
 			border = (length - 1) / 2;
 		else
 			border = length / 2;
-		int min;
+		int min=array1[border][0];
 		for (int i = border; i < length; i++)
 			for (int j = 0; j < border + 1; j++)
 				if (array1[i][j] % 2 == 0)
