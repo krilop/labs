@@ -25,7 +25,8 @@ void chooseTask(int *choice)
 void getStr(char **string, int length)
 {
     printf("Input string:\n");
-    int c, i = 0;
+    char c;
+    int i = 0;
     while ((c = getchar()) != EOF && c != '\n')
     {
         *(*string + i) = c;
@@ -83,7 +84,6 @@ void findCountOfNum(char *s, int *cnt)
 void findKNum(char *s, int k, int *ind)
 {
     int i = 0, cnt = 0;
-
     while (s[i] != '\0')
     {
         if ((i == 0 && ifNum(s[i]) == 1) || (ifNum(s[i - 1]) == 0 && ifNum(s[i]) == 1))
@@ -105,7 +105,7 @@ int charToInt(const char *s, int posOfStart)
     int i;
     int znak;
     i = posOfStart - 1;
-    znak = (s[i] == '-') ? -1 : 1;
+    znak = (s[i] == '-'&&i!=-1) ? -1 : 1;
     i++;
     for (n = 0; s[i] >= '0' && s[i] <= '9'; i++)
         n = 10 * n + (s[i] - '0');
@@ -135,6 +135,9 @@ void main1()
     for (int i = 0; i < countOfNum; i++)
         sum += parr[i];
     printf("sum of nums: %d\n", sum);
+    for (int i = 0; i <length ; ++i)
+        free(*(pstr+i));
+    free(pstr);
 }
 
 void move(char **str, int length, int k)
@@ -188,4 +191,10 @@ void main2()
     for (int i = 0; i < m; i++)
         *(*pstr1 + i + k) = *(*pstr2 + i);
     printString(pstr1);
+    for (int i = 0; i <length1 ; ++i)
+        free(*(pstr1+i));
+    free(pstr1);
+    for (int i = 0; i <length2 ; ++i)
+        free(*(pstr2+i));
+    free(pstr2);
 }
