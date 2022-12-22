@@ -35,6 +35,8 @@ void merge(char **arr, int first, int last)
     int middle, start, end, j;
     //int* mas = new int[100];
     char **tmp = (char **) malloc((last) * sizeof(char *));
+    for (int i = 0; i < first; i++)
+        *(tmp+i)=*arr;
     middle = (first + last) / 2; //вычисление среднего элемента
     start = first; //начало левой части
     end = middle + 1; //начало правой части

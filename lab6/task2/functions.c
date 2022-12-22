@@ -74,7 +74,9 @@ void mergeSort(int **arr, int left, int right, int lengthOfString)
     mergeSort(arr, mid + 1, right, lengthOfString);
     int i = left;  // начало первого пути
     int j = mid + 1; // начало второго пути
-    int **tmp = (int **) malloc(right * sizeof(int *)); // дополнительный массив
+    int **tmp = (int **) malloc(right * sizeof(int *));
+    for (int k = 0; k < left; k++)
+        *(tmp+k)=*arr;// дополнительный массив
     for (int step = 0; step < right - left + 1; step++) // для всех элементов дополнительного массива
         // записываем в формируемую последовательность меньший из элементов двух путей
         // или остаток первого пути если j > r
