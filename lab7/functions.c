@@ -46,22 +46,6 @@ void printString(char **str)
     printf("\n");
 }
 
-/*int charToInt(char *s)
-{ 
-  int n, i=0, znak;
-  while(s[i]!='\0' &&  s[i]==' �)
-		i++;
-
-  if (s[i]=='\0') return 0;   
-  i--;
-  znak =(s[i]=='-') ? -1 : 1;
-  if (s[i]=='+' || s[i]=='-')�
-     i++;
-
-  for(n=0; s[i]>='0' && ss[i]<='9';i++)
-     n = 10*n + (s[i]-'0');
-  return znak*n;    
-*/
 int ifNum(char s)
 {
     if (s >= '0' && s <= '9')
@@ -105,7 +89,7 @@ int charToInt(const char *s, int posOfStart)
     int i;
     int znak;
     i = posOfStart - 1;
-    znak = (s[i] == '-'&&i!=-1) ? -1 : 1;
+    znak = (s[i] == '-' && i != -1) ? -1 : 1;
     i++;
     for (n = 0; s[i] >= '0' && s[i] <= '9'; i++)
         n = 10 * n + (s[i] - '0');
@@ -120,8 +104,7 @@ int getNumOfStr(char **str, int posOfNum)
 }
 
 void main1()
-{//1.	���� ������. ����� ����� ����� � ������
-
+{
     char **pstr = (char **) malloc(sizeof(char *));
     *pstr = (char *) malloc(sizeof(char));
     int length = 1;
@@ -135,8 +118,8 @@ void main1()
     for (int i = 0; i < countOfNum; i++)
         sum += parr[i];
     printf("sum of nums: %d\n", sum);
-    for (int i = 0; i <length ; ++i)
-        free(*(pstr+i));
+    for (int i = 0; i < length; ++i)
+        free(*(pstr + i));
     free(pstr);
 }
 
@@ -144,7 +127,6 @@ void move(char **str, int length, int k)
 {
     for (int i = length; i >= k; i--)
         *(*str + i + 1) = *(*str + i);
-    printString(str);
 }
 
 void getLength(char **s, int *length)
@@ -186,15 +168,15 @@ void main2()
     pstr1 = (char **) realloc(pstr1, length1 + m);
     printf("input pos of insert\n");
     inputNum(&k, length1);
-    for (int i = 0; i < m; i++)
+    for (int i = 0; i <= m; i++)
         move(pstr1, length1 + m, k);
     for (int i = 0; i < m; i++)
         *(*pstr1 + i + k) = *(*pstr2 + i);
     printString(pstr1);
-    for (int i = 0; i <length1 ; ++i)
-        free(*(pstr1+i));
+    for (int i = 0; i < length1; ++i)
+        free(*(pstr1 + i));
     free(pstr1);
-    for (int i = 0; i <length2 ; ++i)
-        free(*(pstr2+i));
+    for (int i = 0; i < length2; ++i)
+        free(*(pstr2 + i));
     free(pstr2);
 }

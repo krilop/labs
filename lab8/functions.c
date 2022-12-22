@@ -51,6 +51,9 @@ void merge(char **arr, int first, int last)
     //возвращение результата в список
     for (j = first; j <= last; j++)
         *(arr + j) = *(tmp + j);
+    for (int i = 0; i < last; ++i)
+        free(tmp[i]);
+    free(tmp);
 };
 
 //рекурсивная процедура сортировки
