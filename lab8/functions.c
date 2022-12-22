@@ -52,7 +52,7 @@ void merge(char **arr, int first, int last)
     for (j = first; j <= last; j++)
         *(arr + j) = *(tmp + j);
     for (int i = 0; i < last; ++i)
-        free(tmp[i]);
+        free(*(tmp+i));
     free(tmp);
 };
 

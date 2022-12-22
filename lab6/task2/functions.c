@@ -92,7 +92,7 @@ void mergeSort(int **arr, int left, int right, int lengthOfString)
     for (int step = 0; step < right - left + 1; step++)
         *(arr + left + step) = *(tmp + step);
     for (int k = 0; k < right; k++)
-        free(tmp[k]);
+        free(*(tmp+k));
     free(tmp);
 }
 
