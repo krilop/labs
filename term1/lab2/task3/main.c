@@ -1,4 +1,4 @@
-//15.	Дано число Х в градусах. Найти значение sin X используя разложение в ряд Тейлора
+//15.	пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ sin X пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 #include <stdio.h>
 #include <math.h>
 
@@ -13,21 +13,20 @@ int main()
     double X;
     int sign = 1;
     printf("Enter angle in degrees\n");
-    while (scanf_s("%lf", &X) != 1 || getchar() != '\n')
-    {
+    while (scanf_s("%lf", &X) != 1 || getchar() != '\n') {
         printf("Uncorrect input");
         rewind(stdin);
     }
     X = degtorad(X);
     double sinx = 0;
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
         sinx = sinx + sign * deg(X, 2 * i + 1) / factorial(2 * i + 1);
         sign = -sign;
     }
     printf("sin=%lf(approximately)", sinx);
     return 0;
 }
+
 double factorial(double a)
 {
     double factorial = 1;
@@ -35,6 +34,7 @@ double factorial(double a)
         factorial = factorial * i;
     return factorial;
 }
+
 double deg(double num, double deg)
 {
     double arg = num;

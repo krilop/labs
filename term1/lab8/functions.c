@@ -22,8 +22,7 @@ void deleteFirstString(char **arr, int howManyStrings)
 int getLength(char **s, int posOfString)
 {
     int cnt = 0, i = 0;
-    while (*(*(s + posOfString) + i) != '\0')
-    {
+    while (*(*(s + posOfString) + i) != '\0') {
         cnt++;
         i++;
     }
@@ -36,35 +35,32 @@ void merge(char **arr, int first, int last)
     //int* mas = new int[100];
     char **tmp = (char **) malloc((last) * sizeof(char *));
     for (int i = 0; i < first; i++)
-        *(tmp+i)=*arr;
-    middle = (first + last) / 2; //вычисление среднего элемента
-    start = first; //начало левой части
-    end = middle + 1; //начало правой части
-    for (j = first; j <= last; j++) //выполнять от начала до конца
-        if ((start <= middle) && ((end > last) || (getLength(arr, start) > getLength(arr, end))))
-        {
+        *(tmp + i) = *arr;
+    middle = (first + last) / 2; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    start = first; //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    end = middle + 1; //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    for (j = first; j <= last; j++) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        if ((start <= middle) && ((end > last) || (getLength(arr, start) > getLength(arr, end)))) {
             *(tmp + j) = *(arr + start);
             start++;
-        } else
-        {
+        } else {
             *(tmp + j) = *(arr + end);
             end++;
         }
-    //возвращение результата в список
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     for (j = first; j <= last; j++)
         *(arr + j) = *(tmp + j);
     for (int i = 0; i < last; ++i)
-        free(*(tmp+i));
+        free(*(tmp + i));
     free(tmp);
 };
 
-//рекурсивная процедура сортировки
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 void mergeSort(char **arr, int first, int last)
 {
-    if (first < last)
-    {
-        mergeSort(arr, first, (first + last) / 2); //сортировка левой части
-        mergeSort(arr, (first + last) / 2 + 1, last); //сортировка правой части
-        merge(arr, first, last); //слияние двух частей
+    if (first < last) {
+        mergeSort(arr, first, (first + last) / 2); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        mergeSort(arr, (first + last) / 2 + 1, last); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        merge(arr, first, last); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     }
 };

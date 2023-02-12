@@ -2,8 +2,7 @@
 
 void inputLength(int *length)
 {
-    while (scanf_s("%d", length) != 1 || *length < 1 || *length > 100000 || getchar() != '\n')
-    {
+    while (scanf_s("%d", length) != 1 || *length < 1 || *length > 100000 || getchar() != '\n') {
         printf("Error! Try again\n");
         rewind(stdin);
     }
@@ -14,17 +13,14 @@ void inputArr(int *parr, int length)
     srand(time(NULL));
     printf("Choose the way of input(1-keyboard,2-random)\n");
     int way;
-    while (scanf_s("%d", &way) != 1 || way != 1 && way != 2 || getchar() != '\n')
-    {
+    while (scanf_s("%d", &way) != 1 || way != 1 && way != 2 || getchar() != '\n') {
         printf("Error! Try again\n");
         rewind(stdin);
     }
     if (way == 1)
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             printf("Input %d-th element:\n", i + 1);
-            while (scanf_s("%d", parr + i) != 1 || getchar() != '\n')
-            {
+            while (scanf_s("%d", parr + i) != 1 || getchar() != '\n') {
                 printf("Error! Try again\n");
                 rewind(stdin);
             }
@@ -43,8 +39,7 @@ void randWorse(int *parr, int length)
 
 void printArr(int *parr, int length)
 {
-    for (int i = 0; i < length; i++)
-    {
+    for (int i = 0; i < length; i++) {
         if (i % 10 == 0)
             printf("\n");
         printf("%d\t", *(parr + i));
@@ -55,8 +50,7 @@ void printArr(int *parr, int length)
 void findInd(int *parr, int length, int *ind)
 {
     for (int i = 0; i < length; i++)
-        if (*(parr + i) > -1)
-        {
+        if (*(parr + i) > -1) {
             *ind = i;
             break;
         }
@@ -65,8 +59,7 @@ void findInd(int *parr, int length, int *ind)
 void power(int *multiple, int a, int b)
 {
     int tmp = a;
-    if (a == 0)
-    {
+    if (a == 0) {
         *multiple = 1;
         return;
     }
@@ -117,8 +110,7 @@ void sortShell(int *parr, int length, int indFirstPositive)
     int i, j, step;
     int tmp;
     for (step = (length - indFirstPositive) / 2; step > 0; step /= 2)
-        for (i = indFirstPositive + 1 + step; i < length; i++)
-        {
+        for (i = indFirstPositive + 1 + step; i < length; i++) {
             tmp = parr[i];
             for (j = i; j >= step + 1 + indFirstPositive; j -= step)
                 if (tmp < parr[j - step])
@@ -132,12 +124,10 @@ void sortShell(int *parr, int length, int indFirstPositive)
 void sortBubble(int *parr, int length, int indFirstPositive)
 {
     int tmp, noSwap;
-    for (int i = length - 1; i > indFirstPositive; i--)
-    {
+    for (int i = length - 1; i > indFirstPositive; i--) {
         noSwap = 1;
         for (int j = indFirstPositive + 1; j < i; j++)
-            if (parr[j] > parr[j + 1])
-            {
+            if (parr[j] > parr[j + 1]) {
                 tmp = parr[j];
                 parr[j] = parr[j + 1];
                 parr[j + 1] = tmp;
@@ -151,8 +141,7 @@ void sortBubble(int *parr, int length, int indFirstPositive)
 void reset(int *reset)
 {
 
-    while (scanf_s("%d", reset) != 1 || *reset != 1 && *reset != 0 || getchar() != '\n')
-    {
+    while (scanf_s("%d", reset) != 1 || *reset != 1 && *reset != 0 || getchar() != '\n') {
         printf("Error! Try again\n");
         rewind(stdin);
     }

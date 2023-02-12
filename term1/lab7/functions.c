@@ -3,8 +3,7 @@
 void reset(int *reset)
 {
     printf("Do u want to run app again?(yes-1, no-0)");
-    while (scanf_s("%d", reset) != 1 || *reset != 1 && *reset != 0 || getchar() != '\n')
-    {
+    while (scanf_s("%d", reset) != 1 || *reset != 1 && *reset != 0 || getchar() != '\n') {
         printf("Error! Try again\n");
         rewind(stdin);
     }
@@ -13,8 +12,7 @@ void reset(int *reset)
 void chooseTask(int *choice)
 {
     printf("Hello! I am consist of two task:\n 1. Given a string. Find the sum of numbers in a string\n2. Given strings S, S0 and numbers k, m. Insert from the k-th position of the string S the first m characters from the string S0\nPlease, enter your choice\n");
-    while (scanf_s("%d", choice) != 1 || *choice != 1 && *choice != 2 || getchar() != '\n')
-    {
+    while (scanf_s("%d", choice) != 1 || *choice != 1 && *choice != 2 || getchar() != '\n') {
         printf("Error! Try again\n");
         rewind(stdin);
     }
@@ -27,8 +25,7 @@ void getStr(char **string, int length)
     printf("Input string:\n");
     char c;
     int i = 0;
-    while ((c = getchar()) != EOF && c != '\n')
-    {
+    while ((c = getchar()) != EOF && c != '\n') {
         *(*string + i) = c;
         i++;
         length++;
@@ -57,8 +54,7 @@ void findCountOfNum(char *s, int *cnt)
 {
     int i = 0;
     *cnt = 0;
-    while (s[i] != '\0')
-    {
+    while (s[i] != '\0') {
         if ((i == 0 && ifNum(s[i]) == 1) || (ifNum(s[i - 1]) == 0 && ifNum(s[i]) == 1))
             *cnt += 1;
         i++;
@@ -68,12 +64,10 @@ void findCountOfNum(char *s, int *cnt)
 void findKNum(char *s, int k, int *ind)
 {
     int i = 0, cnt = 0;
-    while (s[i] != '\0')
-    {
+    while (s[i] != '\0') {
         if ((i == 0 && ifNum(s[i]) == 1) || (ifNum(s[i - 1]) == 0 && ifNum(s[i]) == 1))
             cnt++;
-        if (cnt == k)
-        {
+        if (cnt == k) {
             *ind = i;
             break;
         }
@@ -132,8 +126,7 @@ void move(char **str, int length, int k)
 void getLength(char **s, int *length)
 {
     int cnt = 0, i = 0;
-    while (*(*s + i) != '\0')
-    {
+    while (*(*s + i) != '\0') {
         cnt++;
         i++;
     }
@@ -142,8 +135,7 @@ void getLength(char **s, int *length)
 
 void inputNum(int *num, int border)
 {
-    while (scanf_s("%d", num) != 1 || getchar() != '\n' || *num > border - 1)
-    {
+    while (scanf_s("%d", num) != 1 || getchar() != '\n' || *num > border - 1) {
         printf("Error! Try again\n");
         rewind(stdin);
     }
