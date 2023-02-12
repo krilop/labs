@@ -1,11 +1,12 @@
 #include<stdio.h>
-int main() {
+
+int main()
+{
     float side;
     float volume;
     float square;
     printf("input num:");
-    while(scanf_s("%f", &side)==1 && side >= 0||getchar()!='\n')
-    {
+    while (scanf_s("%f", &side) == 1 && side >= 0 || getchar() != '\n') {
         printf("Uncorrect input");
         rewind(stdin);
     }
