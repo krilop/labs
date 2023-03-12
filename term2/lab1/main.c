@@ -1,18 +1,25 @@
-#include<stdio.h>
-
-int main()
+#include "functions.h"
+#include "sorts.h"
+int main(void)
 {
-    float side;
-    float volume;
-    float square;
-    printf("input num:");
-    while (scanf_s("%f", &side) == 1 && side >= 0 || getchar() != '\n') {
-        printf("Uncorrect input");
-        rewind(stdin);
+    setlocale(LC_ALL, "Rus");
+    char name[]={"/home/krilop/Документы/university/foaap/labs/term2/lab1/basket.txt"};
+    FILE *in;
+    if ((in = fopen(name, "r")) == NULL)
+    {
+        printf("Открыть файл не удалось\n");
+        exit(1);
     }
-    volume = side * side * side;
-    square = side * side * 4;
-    printf("Volume of cube with side %f = %.4f\n", side, volume);
-    printf("Side surface area of a cube with side %f = %.4f\n", side, square);
+
+    t* arr;
+    int sizeOfArray=1;
+    createArrayOfStruct(&arr, &sizeOfArray);
+    parsing(&arr, in, &sizeOfArray);
+
+    menu(&arr, &sizeOfArray);
+    //free(arr);
     return 0;
+
 }
+
+
