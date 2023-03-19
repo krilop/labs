@@ -29,8 +29,16 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
     char *end_str;
     buffer = (char *) calloc(255, 1);
     buffer2 = (char *) calloc(255, 1);
+    end_str = (char *) calloc(255, 1);
     while (!feof(f)) {
         if (fgets(buffer, 255, f) != NULL) {
+            if((strstr(buffer, "class=\"mw-redirect\" title=\"NBA\"")) != NULL)
+            {
+                while(strstr(buffer, "div id")==NULL)
+                    fgets(buffer, 255, f);
+
+                continue;
+            }
             if (strstr(buffer, ".&amp;&amp;&amp;&amp;&amp;0</span>") != NULL) {
 
                 buffer2 = strrchr(buffer, '<') - 2;
@@ -45,23 +53,40 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
 
 
             }
-            if (strstr(buffer, "class=\"mw-redirect\" title=\"") != NULL) {
-                /* while(strstr(buffer, "</a></span>") == NULL)
-                 {
-                     buffer2=buffer;
-                     fgets(buffer, 15, f);
-                     buffer2
-                 }*/
+            if (strstr(buffer, "class=\"mw-redirect\" title=\"")&&(strstr(buffer, "title=\"Баскетбольный Зал славы\"")==NULL)){
+
+
                 buffer2 = strrchr(buffer, '>') - 50;
                 end_str = strchr(buffer2, '>') + 1;
-                int length = (int) (strchr(end_str, '<') - end_str);
-                (*array)[i].name = (char *) malloc(length * sizeof(char));
-                strncpy((*array)[i].name, end_str, length);
+
+                if(strstr(buffer, "<span class=\"vcard\"><span class=\"fn\"><a href=\"")){
+                    buffer = strrchr(buffer, 't');
+                    }
+                if(strstr(buffer, "tle=\"")&&!strchr(buffer, '>')) {
+                    fgets(buffer, 34, f);
+                    end_str = strchr(buffer, '>') + 1;
+                }
+                if(strchr( end_str, '<')==NULL)
+                {
+
+                    fgets(buffer, 34, f);
+                    strncat( end_str, buffer, strchr(buffer,'<')-buffer);
+                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
+                    strncpy((*array)[i].name, end_str, strlen(end_str));
+                }
+                else
+                {
+                    int length = (int) (strchr(end_str, '<') - end_str);
+                    (*array)[i].name = (char *) malloc(length * sizeof(char));
+                    strncpy((*array)[i].name, end_str, length);
+                }
             }
 
-            if (strstr(buffer, "</a></td>") != NULL) {
+            if ((strstr(buffer, "/></a></td>") == NULL)&&!(strstr(buffer, "</a></td>") == NULL)) {
                 //fgets(buffer, 255, f);
                 fgets(buffer, 10, f);
+                if (strstr(buffer, "<td align") != NULL)
+                    continue;
                 buffer2 = strchr(buffer, '>') + 1;
                 if (!strcmp("Ф</t", buffer2)) {
                     (*array)[i].pos = FORWARD;
@@ -70,11 +95,13 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
                 else if (!strcmp("З</t", buffer2))
                     (*array)[i].pos = GUARD;
                 else
-                    printf("Error!");
+                    (*array)[i].pos = NONE;
                 *sizeOfArray += 1;
+                *array = (t *) realloc(*array, sizeof(t) * (*sizeOfArray));
                 i++;
+
             }
-            *array = (t *) realloc(*array, sizeof(t) * (*sizeOfArray));
+
 
         } else {
             perror("ERROR_GETS");
@@ -133,10 +160,8 @@ void initializateObjectOfStruct(t **array, int *sizeOfArray)
         (*array)[*sizeOfArray - 1].pos = FORWARD;
     else if (!strcmp(str, pos[2]))
         (*array)[*sizeOfArray - 1].pos = GUARD;
-    else {
-        printf("Critical error in initialization pos\n");
-        exit(1);
-    }
+    else
+        (*array)[*sizeOfArray - 1].pos = NONE;
     (*array)[*sizeOfArray - 1].num = num;
     // free(str);
 }
@@ -153,8 +178,9 @@ void deleteObjectOfStruct(t **array, int *sizeOfArray)
     }
     if (n == -1)
         return;
+    free((*array+n)->name);
     for (int i = n; i <= *sizeOfArray - 1; i++)
-        *(*array + i) = *(*array + i + 1);
+        array[i] = array[i + 1];
     *sizeOfArray = *sizeOfArray - 1;
     *array = (t *) realloc(*array, sizeof(t) * (*sizeOfArray));
 }
@@ -179,7 +205,7 @@ void menu(t **array, int *sizeOfArr)
                 deleteObjectOfStruct(array, sizeOfArr);
                 break;
             case 4:
-                sortStart(array, sizeOfArr);
+                sortStart(*array, *sizeOfArr);
                 break;
             case 5:
                 return;

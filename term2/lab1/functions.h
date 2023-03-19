@@ -10,13 +10,14 @@
 #include <string.h>
 #include <locale.h>
 static char* pos[]={
+
     "CENTER",
     "FORWARD",
     "GUARD"
 };
 
 typedef enum position{
-    CENTER, FORWARD, GUARD
+    CENTER, FORWARD, GUARD, NONE
 } position;
 typedef struct s {
     int num;
