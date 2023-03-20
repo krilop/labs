@@ -30,19 +30,21 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
     buffer = (char *) calloc(255, 1);
     buffer2 = (char *) calloc(255, 1);
     end_str = (char *) calloc(255, 1);
+    while (fgets(buffer, 255, f) != NULL) {
+        if ((strstr(buffer, "class=\"mw-redirect\" title=\"NBA\"")) != NULL) {
+            while (strstr(buffer, "div id") == NULL)
+                fgets(buffer, 255, f);
+
+            break;
+        }
+    }
     while (!feof(f)) {
         if (fgets(buffer, 255, f) != NULL) {
-            if((strstr(buffer, "class=\"mw-redirect\" title=\"NBA\"")) != NULL)
-            {
-                while(strstr(buffer, "div id")==NULL)
-                    fgets(buffer, 255, f);
-
+            if ((strstr(buffer, "title=\"Баскетбольный Зал славы\"") != NULL))
                 continue;
-            }
+
             if (strstr(buffer, ".&amp;&amp;&amp;&amp;&amp;0</span>") != NULL) {
-
                 buffer2 = strrchr(buffer, '<') - 2;
-
                 int num = 0;
                 for (int l = 0; l < 3; ++l)
                     if (buffer2[l] <= '9' && buffer2[l] >= '0') {
@@ -50,39 +52,68 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
                         num = num + buffer2[l] - '0';
                     }
                 (*array)[i].num = num;
-
-
-            }
-            if (strstr(buffer, "class=\"mw-redirect\" title=\"")&&(strstr(buffer, "title=\"Баскетбольный Зал славы\"")==NULL)){
-
-
-                buffer2 = strrchr(buffer, '>') - 50;
-                end_str = strchr(buffer2, '>') + 1;
-
-                if(strstr(buffer, "<span class=\"vcard\"><span class=\"fn\"><a href=\"")){
-                    buffer = strrchr(buffer, 't');
-                    }
-                if(strstr(buffer, "tle=\"")&&!strchr(buffer, '>')) {
-                    fgets(buffer, 34, f);
-                    end_str = strchr(buffer, '>') + 1;
-                }
-                if(strchr( end_str, '<')==NULL)
+                if((*array)[i].num==24)
                 {
+                    fgets(buffer, 255, f) != NULL;
+                    if (!strstr(buffer, "class=\"mw-redirect\" title=\""))
+                    {
+                        (*array)[i].name = (char *) malloc(strlen("Бобби Джонс") * sizeof(char));
+                        strncpy((*array)[i].name, "Бобби Джонс", strlen("Бобби Джонс"));
+                    }
 
-                    fgets(buffer, 34, f);
-                    strncat( end_str, buffer, strchr(buffer,'<')-buffer);
-                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
-                    strncpy((*array)[i].name, end_str, strlen(end_str));
+                }
+            }
+            if (strstr(buffer, "class=\"mw-redirect\" title=\"")) {
+               /* if(strstr(buffer, "</a></s")!=NULL)
+                {
+                    buffer2 = strrchr(buffer, '>') - 50;
+                    end_str = strchr(buffer2, '>') + 1;
                 }
                 else
                 {
+                    fgets(buffer, 255, f);
+                    buffer2 = strrchr(buffer, '>') - 60;
+                    end_str = strchr(buffer2, '>') + 1;
+
+                }*/
+                buffer2 = strstr(buffer, "class=\"mw-redirect\" title=\"");
+                end_str = strstr(buffer2, "title=\"");
+                buffer2 = strstr(end_str, "\"");
+                end_str= buffer2+1;
+
+                /*
+                if (strstr(buffer, "<span class=\"vcard\"><span class=\"fn\"><a href=\"")) {
+                    buffer = strrchr(buffer, 't');
+                }
+                if (strstr(buffer, "tle=\"") && !strchr(buffer, '>')) {
+                    fgets(buffer, 34, f);
+                    end_str = strchr(buffer, '>') + 1;
+                }
+                if (strchr(end_str, '<') == NULL) {
+
+                    fgets(buffer, 34, f);
+                    strncat(end_str, buffer, strchr(buffer, '<') - buffer);
+                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
+                    strncpy((*array)[i].name, end_str, strlen(end_str));
+                } else {
                     int length = (int) (strchr(end_str, '<') - end_str);
+                    (*array)[i].name = (char *) malloc(length * sizeof(char));
+                    strncpy((*array)[i].name, end_str, length);
+                }*/
+                if (strchr(end_str, '\"') == NULL) {
+
+                    fgets(buffer, 34, f);
+                    strncat(end_str, buffer, strchr(buffer, '\"') - buffer);
+                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
+                    strncpy((*array)[i].name, end_str, strlen(end_str));
+                } else {
+                    int length = (int) (strchr(end_str, '\"') - end_str);
                     (*array)[i].name = (char *) malloc(length * sizeof(char));
                     strncpy((*array)[i].name, end_str, length);
                 }
             }
 
-            if ((strstr(buffer, "/></a></td>") == NULL)&&!(strstr(buffer, "</a></td>") == NULL)) {
+            if ((strstr(buffer, "/></a></td>") == NULL) && !(strstr(buffer, "</a></td>") == NULL)) {
                 //fgets(buffer, 255, f);
                 fgets(buffer, 10, f);
                 if (strstr(buffer, "<td align") != NULL)
@@ -178,7 +209,7 @@ void deleteObjectOfStruct(t **array, int *sizeOfArray)
     }
     if (n == -1)
         return;
-    free((*array+n)->name);
+    free((*array + n)->name);
     for (int i = n; i <= *sizeOfArray - 1; i++)
         array[i] = array[i + 1];
     *sizeOfArray = *sizeOfArray - 1;

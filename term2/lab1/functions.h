@@ -13,7 +13,8 @@ static char* pos[]={
 
     "CENTER",
     "FORWARD",
-    "GUARD"
+    "GUARD",
+    "NONE"
 };
 
 typedef enum position{
