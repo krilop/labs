@@ -31,6 +31,6 @@ add_executable(lab7 term1/lab7/main.c term1/lab7/functions.c term1/lab7/header.h
 
 add_executable(lab8 term1/lab8/main.c term1/lab8/functions.c term1/lab8/header.h)
 
-add_executable(lab9 term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h )
+add_executable(lab9 term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h term2/lab1/basket.txt)
 
 add_executable(test test/main.c test/functions.c test/functions.h)

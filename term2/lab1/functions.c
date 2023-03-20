@@ -26,10 +26,10 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
     int i = 0, j = 0, k = 0;
     char *buffer;
     char *buffer2;
-    char *end_str;
+    char *endStr;
     buffer = (char *) calloc(255, 1);
     buffer2 = (char *) calloc(255, 1);
-    end_str = (char *) calloc(255, 1);
+    endStr = (char *) calloc(255, 1);
     while (fgets(buffer, 255, f) != NULL) {
         if ((strstr(buffer, "class=\"mw-redirect\" title=\"NBA\"")) != NULL) {
             while (strstr(buffer, "div id") == NULL)
@@ -64,52 +64,21 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
                 }
             }
             if (strstr(buffer, "class=\"mw-redirect\" title=\"")) {
-               /* if(strstr(buffer, "</a></s")!=NULL)
-                {
-                    buffer2 = strrchr(buffer, '>') - 50;
-                    end_str = strchr(buffer2, '>') + 1;
-                }
-                else
-                {
-                    fgets(buffer, 255, f);
-                    buffer2 = strrchr(buffer, '>') - 60;
-                    end_str = strchr(buffer2, '>') + 1;
 
-                }*/
                 buffer2 = strstr(buffer, "class=\"mw-redirect\" title=\"");
-                end_str = strstr(buffer2, "title=\"");
-                buffer2 = strstr(end_str, "\"");
-                end_str= buffer2+1;
-
-                /*
-                if (strstr(buffer, "<span class=\"vcard\"><span class=\"fn\"><a href=\"")) {
-                    buffer = strrchr(buffer, 't');
-                }
-                if (strstr(buffer, "tle=\"") && !strchr(buffer, '>')) {
-                    fgets(buffer, 34, f);
-                    end_str = strchr(buffer, '>') + 1;
-                }
-                if (strchr(end_str, '<') == NULL) {
+                endStr = strstr(buffer2, "title=\"");
+                buffer2 = strstr(endStr, "\"");
+                endStr= buffer2+1;
+                if (strchr(endStr, '\"') == NULL) {
 
                     fgets(buffer, 34, f);
-                    strncat(end_str, buffer, strchr(buffer, '<') - buffer);
-                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
-                    strncpy((*array)[i].name, end_str, strlen(end_str));
+                    strncat(endStr, buffer, strchr(buffer, '\"') - buffer);
+                    (*array)[i].name = (char *) malloc(strlen(endStr) * sizeof(char));
+                    strncpy((*array)[i].name, endStr, strlen(endStr));
                 } else {
-                    int length = (int) (strchr(end_str, '<') - end_str);
+                    int length = (int) (strchr(endStr, '\"') - endStr);
                     (*array)[i].name = (char *) malloc(length * sizeof(char));
-                    strncpy((*array)[i].name, end_str, length);
-                }*/
-                if (strchr(end_str, '\"') == NULL) {
-
-                    fgets(buffer, 34, f);
-                    strncat(end_str, buffer, strchr(buffer, '\"') - buffer);
-                    (*array)[i].name = (char *) malloc(strlen(end_str) * sizeof(char));
-                    strncpy((*array)[i].name, end_str, strlen(end_str));
-                } else {
-                    int length = (int) (strchr(end_str, '\"') - end_str);
-                    (*array)[i].name = (char *) malloc(length * sizeof(char));
-                    strncpy((*array)[i].name, end_str, length);
+                    strncpy((*array)[i].name, endStr, length);
                 }
             }
 

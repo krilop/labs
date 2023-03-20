@@ -136,16 +136,3 @@ void swap(t *array, int a,int b)
     array[a] = array[b];
     array[b] = tmp;
 }
-/*
-void insertion_sort (COMPANIES_STRUCT *mas, int n) {
-    for (int k = 1; k < n; k++)
-        for (int i = k; i > 0 && mas[i - 1].salary >= mas[i].salary; i--) {
-            if (mas[i - 1].salary > mas[i].salary)
-                swap(&mas[i], &mas[i - 1]);
-            else {
-                if (mas[i - 1].sex > mas[i].sex)
-                    swap(&mas[i], &mas[i - 1]);
-            }
-        }
-}
- */
