@@ -4,6 +4,9 @@
 
 #include "functions.h"
 
+#define SIZE_OF_STRING 255
+#define SIZE_OF_WORD 50
+
 char *readFile(char *nameOfFile)
 {
     FILE *f = fopen(nameOfFile, "rb");
@@ -22,19 +25,17 @@ char *readFile(char *nameOfFile)
 }
 
 
-void pushInStack(stack **head, char *word, int cnt)
+void pushInStack(stack **head, char *word)
 {
     stack *tmp;
     tmp = (stack *) malloc(sizeof(stack));
-    tmp->word = word;
-    tmp->length = strlen(word);
-    tmp->count = cnt;
-    tmp->flagOfUsing = 0;
+    if (tmp == NULL) exit(EXIT_FAILURE);
+    tmp->word=(char*)malloc(sizeof(char)*(strlen(word)+1));//!!!!!!Проверить эту единицу
+    strcpy(tmp->word, word);
     tmp->next = NULL;
     if (*head == NULL)
     {
         *head = tmp;
-        return;
     }
     else
     {
@@ -54,297 +55,191 @@ void popOutOfStack(stack **head)
     {
         stack *tmp;
         tmp = *head;
-        *head = tmp->next;
+        *head = (*head)->next;
         free(tmp->word);
         free(tmp);
     }
 }
 
-void split(char *buffer, char *delimiter, words *arrayOfWords)
+void split(FILE **f, stack **head)
 {
-    char *token = strtok(buffer, delimiter);
-    while (token != NULL)
+    char *string = (char *) malloc(sizeof(char) * (SIZE_OF_STRING));
+    while (!feof(*f))
     {
-        arrayOfWords->word = (char **) realloc(arrayOfWords->word, (arrayOfWords->length + 1) * sizeof(char *));
-        *(arrayOfWords->word + arrayOfWords->length) = (char *) malloc(strlen(token) + 1);
-        arrayOfWords->word[arrayOfWords->length] = token;
-        arrayOfWords->length++;
-        token = strtok(NULL, delimiter);
+        if (fgets(string, SIZE_OF_STRING, *f) == NULL)
+        {
+            exit(EXIT_FAILURE);
+        }
+        int i = 0;
+        char *delim = " ";
+        char *token = strtok(string, delim);
+        while (token != NULL)
+        {
+            pushInStack(head, token);
+            token = strtok(NULL, delim);
+        }
+
     }
+    free(string);
 }
 
-int doesItExist(stack *head, char *string)
-{
-    while (head)
-    {
-        if (strcmp(head->word, string) == 0) return 1;
-        head = head->next;
-    }
-    return 0;
-}
 
-void putWordsInTheStack(stack **head, words *arrayOfWords)
+void putWordsInArray(stack **head, words **arrayOfWords, int *size)
 {
-    for (int i = 0; i < arrayOfWords->length; i++)
+
+    char* buffer=(char*)malloc(SIZE_OF_STRING*sizeof(char));
+    int i = 0;
+    *arrayOfWords = (words *) malloc( sizeof(words));
+    while (*head != NULL)
     {
-        if (doesItExist(*head, arrayOfWords->word[i]))
+
+        buffer = (char *) realloc(buffer,sizeof(char) * (1+strlen((*head)->word)));
+        strcpy(buffer,(*head)->word);
+       // (*arrayOfWords)[i - 1].word = (char *) malloc(sizeof(char) * strlen((*arrayOfWords)[i - 1].word));
+
+        for (int j = 0; j < i+1; j++)
         {
-            continue;
-        }
-        if (strstr(arrayOfWords->word[i], "\n") != NULL)
-        {
-            continue;
-        }
-        int count = 0;
-        for (int j = 0; j < arrayOfWords->length; j++)
-        {
-            if (strcmp(arrayOfWords->word[j], arrayOfWords->word[i]) == 0)
+            if (j == i)
             {
-                count++;
+                i++;
+                *arrayOfWords = (words *) realloc(*arrayOfWords, sizeof(words)*i);
+                (*arrayOfWords)[j].word = (char *) malloc(sizeof(char) * (1+strlen(buffer)));
+                strcpy((*arrayOfWords)[j].word,buffer);
+                (*arrayOfWords)[j].count = 1;
+                break;
+            }
+            if (strcmp((*arrayOfWords)[j].word, buffer) == 0)
+            {
+                (*arrayOfWords)[j].count+=1;
+                break;
             }
         }
-        pushInStack(&(*head), arrayOfWords->word[i], count);
+        popOutOfStack(head);
     }
-    //bubbleSort(*head);
+    free(buffer);
+    *size = i;
 }
 
-/*
-stack* FindNext(stack* head,stack* next)
+void sortWords(words **arr, int size)
 {
-    stack* p=head;
-    while(p->next!=next) p=p->next;
-    return p;
-}
-void bubbleSort(stack* head)
-{
-    stack *p1;
-    stack *p2;
-    int v;
-    if(!head) return;
-    for(p1=head; p1->next; p1=p1->next)
-        for(p2=FindNext(p1,NULL); p2!=p1; p2=FindNext(p1,p2))
-            if(p1->count*p1->length>p2->count*p2->length)
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            int countFirst=((*arr)[i].count);
+            int countSecond=((*arr)[j].count);
+            int lengthFirst=(int)strlen(((*arr)[i].word));
+            int lengthSecond=(int)strlen(((*arr)[j].word));
+            int profitFirstWord=lengthFirst *countFirst ;
+            int profitSecondWord=lengthSecond * countSecond;
+            if (profitFirstWord < profitSecondWord )
             {
-                stack* tmp=p1;
-                p1=p2;
-                p2=tmp;
+                words tmp;
+                tmp.word =(char*)malloc(sizeof(char)*(1+strlen((*arr)[i].word)));
+                strcpy(tmp.word,(*arr)[i].word);
+                tmp.count=(*arr)[i].count;
+                (*arr)[i].word =(char*)realloc((*arr)[i].word,sizeof(char)*(1+strlen((*arr)[j].word)));
+                strcpy((*arr)[i].word,(*arr)[j].word);
+                (*arr)[i].count=(*arr)[j].count;
+                (*arr)[j].word =(char*)realloc((*arr)[j].word,sizeof(char)*(1+strlen(tmp.word)));
+                strcpy((*arr)[j].word,tmp.word);
+                (*arr)[j].count=tmp.count;
+                free(tmp.word);
             }
-
-}*/
-
-int calculateTheProfit(stack *word1, stack *word2)
-{
-    if (word1->count <= word2->count)
-    {return 0;}
-    else if (word1->flagOfUsing || word2->flagOfUsing)
-    {return -1;}
-    else
-    {
-        return (int) ((word1->count * word1->length + word2->count * word2->length) -
-                (word1->count * word2->length + word2->count * word1->length) -
-                (word1->length + word2->length + 2));
+        }
     }
 }
 
-void markWord(stack *head, char *word)
+void pair(words **arr, int size, pairs **newArr, int *newSize)
 {
-    while (head != NULL)
+    int profit, max = 1;
+    int countOfPairs = 0;
+    int indFirstWord = 0;
+    int indSecondWord = 0;
+    words tmp1,tmp2;
+    tmp1.word =(char*)malloc(sizeof(char));
+    tmp2.word =(char*)malloc(sizeof(char));
+    (*newArr) = (pairs *) malloc(sizeof(pair));
+    do
     {
-        if (strcmp(head->word, word) == 0)
+        max = 0;
+        for (int i = 0; i < size; i++)
         {
-            head->flagOfUsing = 1;
-            return;
-        }
-        head = head->next;
-    }
-}
-
-void swap(words *arrayOfWords, char *a, char *b)
-{
-    for (int i = 0; i < arrayOfWords->length; ++i)
-    {
-
-        if (strcmp(arrayOfWords->word[i], a) == 0)
-        {
-
-            arrayOfWords->word[i] = b;
-        }
-        else if (strcmp(arrayOfWords->word[i], b) == 0)
-        {
-            arrayOfWords->word[i] = a;
-
-        }
-
-    }
-}
-
-void replace(stack *head, words *arrayOfWords, char *name)
-{
-    fclose(fopen(name, "w"));
-    FILE *f = fopen(name, "ab");
-    if (f == NULL) exit(EXIT_FAILURE);
-
-    stack *word1 = head;
-    int i = 1;
-
-    char *word;
-    while (word1)
-    {
-        int max = 0;
-        stack *word2 = head;
-
-        while (word2)
-        {
-
-            int profit = calculateTheProfit(word1, word2);
-            if (profit > max)
+            for (int j = 0; j < size; j++)
             {
-                max = profit;
-                word = word2->word;
-            }
-            word2 = word2->next;
+                profit = (int) (strlen((*arr)[i].word) * (*arr)[i].count
+                        + (strlen((*arr)[j].word) * (*arr)[j].count
+                        - strlen((*arr)[i].word) * (*arr)[j].count
+                        - strlen((*arr)[j].word) * (*arr)[i].count - 2));
+                if (profit > max)
+                {
+                    max = profit;
 
+                    tmp1.word =(char*)realloc(tmp1.word,sizeof(char)*(1+strlen((*arr)[i].word)));
+                    strcpy(tmp1.word,(*arr)[i].word);
+                    tmp1.count=(*arr)[i].count;
+
+                    tmp2.word =(char*)realloc(tmp2.word,sizeof(char)*(1+strlen((*arr)[i].word)));
+                    strcpy(tmp2.word,(*arr)[i].word);
+                    tmp2.count=(*arr)[i].count;
+                    indSecondWord = j;
+                }
+            }
         }
         if (max > 0)
         {
+            countOfPairs++;
+            //Занести слово1 с индексом первого в пару, занести слово2 с индексом второго
+            (*newArr) = (pairs *) realloc((*newArr), sizeof(pair) * countOfPairs);
+            (*newArr)[countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indFirstWord].word)));
+            (*newArr)[countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indSecondWord].word)));
+            strcpy((*newArr)[countOfPairs-1].word1,(*arr)[indFirstWord].word);
+            strcpy((*newArr)[countOfPairs-1].word2,(*arr)[indSecondWord].word);
 
-            markWord(head, word);
-            markWord(head, word1->word);
-            if (strlen(word) == 0 || strlen(word1->word) == 0) continue;
-            swap(arrayOfWords, word1->word, word);
 
-            fputs(word1->word, f);
-            fputs(" ", f);
-            fputs(word, f);
-            fputs("\n", f);
-
-        }
-        word1 = word1->next;
-        i++;
-        float progr = (float) i;
-        progr /= (float) arrayOfWords->length;
-        progr *= 100;
-        int bar = (int) progr;
-        printf("[");
-        for (int k = 0; k < 100; k++)
-        {
-            if (k <= bar)
+            for (int i = indFirstWord; i < size - 1; i++)
             {
-                printf("=");
+                (*arr)[i] = (*arr)[i + 1];
             }
-            else
-            {printf(" ");}
+            size--;
+            indSecondWord--;
+            for (int i = indSecondWord; i < size - 1; i++)
+            {
+                (*arr)[i] = (*arr)[i + 1];
+            }
+            size--;
+            (*arr) = (words *) realloc((*arr), sizeof(words) * size);
+
         }
-        printf("] %d%%\n", bar);
-    }
 
-    fputs("$#@\n", f);
-    fclose(f);
-
+    } while (max > 0);
+    *newSize = countOfPairs;
 }
-
 
 void compress(char *name)
 {
-    long int lSizeBefore;
-    char *buffer = readFile(name);
     FILE *f = fopen(name, "rb");
+    if (f == NULL) exit(EXIT_FAILURE);
     fseek(f, 0, SEEK_END);
-    lSizeBefore = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    printf("Size of file before compressing: %ld\n", lSizeBefore);
-
-    // char *buffer = (char *) calloc(255, sizeof(char));
-    freopen(name, "r", f);
-    if (f == NULL)
-    {
-        exit(EXIT_FAILURE);
-    }
-    words arrayOfWords;
-    arrayOfWords.length = 0;
-    arrayOfWords.word = (char **) malloc(0);
-    split(buffer, " ", &arrayOfWords);
+    printf("Size of file before compressing:%ld", ftell(f));
     stack *head = NULL;
+    fseek(f, 0, SEEK_SET);
+    split(&f, &head);
+    words **arrayOfWords = (words **) malloc(sizeof(words *));
+    int sizeOfArray = 0;
+    putWordsInArray(&head, arrayOfWords, &sizeOfArray);
+    for(int i=0; i<sizeOfArray;i++)
+        puts((*arrayOfWords)[i].word);
+    int countOfPair = 0;
+    sortWords(arrayOfWords, sizeOfArray);
+    for(int i=0; i<sizeOfArray;i++)
+        puts((*arrayOfWords)[i].word);
+    pairs *twoWords;
+    pair(arrayOfWords, sizeOfArray, &twoWords, &countOfPair);
 
-
-    putWordsInTheStack(&head, &arrayOfWords);
-
-    char *nameAfterCompressing = (char *) malloc((strlen(name) + strlen(".compressed")) * sizeof(char));
-    strcat(strcat(nameAfterCompressing, name), ".compressed");
-    replace(head, &arrayOfWords, nameAfterCompressing);
-    f = fopen(nameAfterCompressing, "a");
-    if (f == NULL)
-    {
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 0; i < arrayOfWords.length; i++)
-    {
-        fputs(arrayOfWords.word[i], f);
-        if (i != arrayOfWords.length - 1) fputs(" ", f);
-    }
-    freopen(nameAfterCompressing, "rb", f);
-    fseek(f, 0, SEEK_END);
-    long int lSizeAfter = ftell(f);
-    printf("Length of file after compressing: %ld\n", lSizeAfter);
-    printf("Size of file before compressing: %ld\n", lSizeBefore);
-    free(buffer);
 }
 
 void decompress(char *name)
 {
-    char* nameTmp=name;
 
-    strcat(name, ".compressed");
-    char *bufferCompr = readFile(name);
-    if (bufferCompr == NULL) exit(EXIT_FAILURE);
-    char *pos = bufferCompr;
-    bufferCompr = strstr(bufferCompr, "$#@")+sizeof ("$#@");
-
-    long int length =0;
-    length+=strlen(pos);
-    length-=strlen(bufferCompr);
-    length-=strlen("$#@\n");
-    pos = (char *) realloc(pos, sizeof(char) * (length));
-    //pos= strncpy(pos,pos,sizeof(char) * (length));
-    words arrayOfCompr;
-    arrayOfCompr.length = 0;
-    arrayOfCompr.word = (char **) malloc(0);
-
-
-    //возможно, здесь много ем
-    words arrayOfDictionary;
-    arrayOfDictionary.length = 0;
-    arrayOfDictionary.word = (char **) malloc(0);
-    split(pos, "\n", &arrayOfDictionary);
-    split(bufferCompr, " ", &arrayOfCompr);
-    for (int i = 0; i<arrayOfDictionary.length; i++)
-    {
-       // if( arrayOfDictionary.word[i]=="$#@\n")
-        //    break;
-        words words;
-        words.length = 0;
-        words.word = (char **) malloc(0);
-        split(arrayOfDictionary.word[i], " ", &words);
-        if (words.length != 2) continue;
-        swap(&arrayOfCompr, words.word[0], words.word[1]);
-    }
-    char *nameAfterDecompressing = (char *) malloc((strlen(nameTmp) + strlen(".decompressed")) * sizeof(char));
-    strcat(strcat(nameAfterDecompressing, nameTmp), ".decompressed");
-
-    FILE *f = fopen(nameAfterDecompressing, "w");
-    if (f == NULL) exit(EXIT_FAILURE);
-    freopen(nameAfterDecompressing, "ab", f);
-    if (f == NULL) exit(EXIT_FAILURE);
-
-    for (int i = 0; i < arrayOfCompr.length; i++)
-    {
-        fputs(arrayOfCompr.word[i], f);
-        if (i != arrayOfCompr.length - 1) fputs(" ", f);
-    }
-    fseek(f, 0, SEEK_END);
-    long int lSizeDecompress = ftell(f);
-    fclose(f);
-
-    printf("New size: %d\n", lSizeDecompress);
-    printf("File decompressed!\n");
 }
