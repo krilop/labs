@@ -104,6 +104,7 @@ void putWordsInArray(stack **head, words **arrayOfWords, int *size)
                 (*arrayOfWords)[j].word = (char *) malloc(sizeof(char) * (1+strlen(buffer)));
                 strcpy((*arrayOfWords)[j].word,buffer);
                 (*arrayOfWords)[j].count = 1;
+                (*arrayOfWords)[j].markAsUsed=0;
                 break;
             }
             if (strcmp((*arrayOfWords)[j].word, buffer) == 0)
@@ -161,10 +162,15 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
     do
     {
         max = 0;
+
         for (int i = 0; i < size; i++)
         {
+            if((*arr)[i].markAsUsed==1)
+                continue;
             for (int j = 0; j < size; j++)
             {
+                if((*arr)[j].markAsUsed==1)
+                    continue;
                 profit = (int) (strlen((*arr)[i].word) * (*arr)[i].count
                         + (strlen((*arr)[j].word) * (*arr)[j].count
                         - strlen((*arr)[i].word) * (*arr)[j].count
@@ -176,7 +182,7 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
                     tmp1.word =(char*)realloc(tmp1.word,sizeof(char)*(1+strlen((*arr)[i].word)));
                     strcpy(tmp1.word,(*arr)[i].word);
                     tmp1.count=(*arr)[i].count;
-
+                    indFirstWord=i;
                     tmp2.word =(char*)realloc(tmp2.word,sizeof(char)*(1+strlen((*arr)[j].word)));
                     strcpy(tmp2.word,(*arr)[j].word);
                     tmp2.count=(*arr)[j].count;
@@ -186,38 +192,19 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
         }
         if (max > 0)
         {
-            countOfPairs++;
+            (*countOfPairs)++;
             //Занести слово1 с индексом первого в пару, занести слово2 с индексом второго
-            (*newArr) = (pairs *) realloc((*newArr), sizeof(pair) * (*countOfPairs));
+            (*newArr) = (pairs *) realloc((*newArr), sizeof(pairs) * (*countOfPairs));
             (*newArr)[*countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indFirstWord].word)));
             (*newArr)[*countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indSecondWord].word)));
             strcpy((*newArr)[*countOfPairs-1].word1,(*arr)[indFirstWord].word);
             strcpy((*newArr)[*countOfPairs-1].word2,(*arr)[indSecondWord].word);
-
-
-            for (int i = indFirstWord; i < size - 1; i++)
-            {
-                free((*arr)[i].word);
-                (*arr)[i].word =(char*)malloc(sizeof(char)*(1+strlen((*arr)[i+1].word)));
-                strcpy((*arr)[i].word,(*arr)[i+1].word);
-                (*arr)[i].count=(*arr)[i+1].count;
-            }
-            free((*arr)[size-1].word);
-            size--;
-            indSecondWord--;
-            for (int i = indSecondWord; i < size - 1; i++)
-            {
-                (*arr)[i].word =(char*)realloc((*arr)[i].word,sizeof(char)*(1+strlen((*arr)[i+1].word)));
-                strcpy((*arr)[i].word,(*arr)[i+1].word);
-                (*arr)[i].count=(*arr)[i+1].count;
-            }
-            free((*arr)[size-1].word);
-            size--;
-            (*arr) = (words *) realloc((*arr), sizeof(words) * size);
-
+            (*arr)[indFirstWord].markAsUsed=1;
+            (*arr)[indSecondWord].markAsUsed=1;
         }
 
     } while (max > 0);
+
 }
 
 void compress(char *name)
@@ -229,6 +216,7 @@ void compress(char *name)
     stack *head = NULL;
     fseek(f, 0, SEEK_SET);
     split(&f, &head);
+    fclose(f);
     words **arrayOfWords = (words **) malloc(sizeof(words *));
     int sizeOfArray = 0;
     putWordsInArray(&head, arrayOfWords, &sizeOfArray);
@@ -240,6 +228,34 @@ void compress(char *name)
         puts((*arrayOfWords)[i].word);
     pairs *twoWords;
     pair(arrayOfWords, sizeOfArray, &twoWords, &countOfPair);
+    for (int i = 0; i <sizeOfArray; i++)
+        free((*arrayOfWords)[i].word);
+    free(*arrayOfWords);
+    free(arrayOfWords);
+    char* nameAfterCompressing="";
+    nameAfterCompressing= (char*)calloc(((int)strlen(name) + (int)strlen(".compressed")+1), sizeof(char));
+    strcat(strcat(nameAfterCompressing, name), ".compressed");
+    f = fopen(nameAfterCompressing, "wb+");
+    fseek(f,0,SEEK_SET);
+    if (f == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+    puts(twoWords[0].word1);
+    puts(twoWords[0].word2);
+    for (int i = 0; i < countOfPair; i++)
+    {
+        fputs(twoWords[i].word1,f);
+        fputs(" ",f);
+        fputs(twoWords[i].word2,f);
+        fputs("\n",f);
+    }
+    fputs("@#$\n",f);
+    fclose(f);
+    FILE* file= fopen(nameAfterCompressing,"ab");
+    f= fopen(name,"rb");
+    if(file==NULL||f==NULL)
+        exit(EXIT_FAILURE);
 
 }
 
