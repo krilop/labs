@@ -5,7 +5,6 @@
 #include "functions.h"
 
 #define SIZE_OF_STRING 255
-#define SIZE_OF_WORD 50
 
 char *readFile(char *nameOfFile)
 {
@@ -70,7 +69,6 @@ void split(FILE **f, stack **head)
         {
             exit(EXIT_FAILURE);
         }
-        int i = 0;
         char *delim = " ";
         char *token = strtok(string, delim);
         while (token != NULL)
@@ -150,10 +148,10 @@ void sortWords(words **arr, int size)
     }
 }
 
-void pair(words **arr, int size, pairs **newArr, int *newSize)
+void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
 {
-    int profit, max = 1;
-    int countOfPairs = 0;
+    int profit, max;
+    *countOfPairs = 0;
     int indFirstWord = 0;
     int indSecondWord = 0;
     words tmp1,tmp2;
@@ -179,9 +177,9 @@ void pair(words **arr, int size, pairs **newArr, int *newSize)
                     strcpy(tmp1.word,(*arr)[i].word);
                     tmp1.count=(*arr)[i].count;
 
-                    tmp2.word =(char*)realloc(tmp2.word,sizeof(char)*(1+strlen((*arr)[i].word)));
-                    strcpy(tmp2.word,(*arr)[i].word);
-                    tmp2.count=(*arr)[i].count;
+                    tmp2.word =(char*)realloc(tmp2.word,sizeof(char)*(1+strlen((*arr)[j].word)));
+                    strcpy(tmp2.word,(*arr)[j].word);
+                    tmp2.count=(*arr)[j].count;
                     indSecondWord = j;
                 }
             }
@@ -190,30 +188,36 @@ void pair(words **arr, int size, pairs **newArr, int *newSize)
         {
             countOfPairs++;
             //Занести слово1 с индексом первого в пару, занести слово2 с индексом второго
-            (*newArr) = (pairs *) realloc((*newArr), sizeof(pair) * countOfPairs);
-            (*newArr)[countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indFirstWord].word)));
-            (*newArr)[countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indSecondWord].word)));
-            strcpy((*newArr)[countOfPairs-1].word1,(*arr)[indFirstWord].word);
-            strcpy((*newArr)[countOfPairs-1].word2,(*arr)[indSecondWord].word);
+            (*newArr) = (pairs *) realloc((*newArr), sizeof(pair) * (*countOfPairs));
+            (*newArr)[*countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indFirstWord].word)));
+            (*newArr)[*countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1+strlen((*arr)[indSecondWord].word)));
+            strcpy((*newArr)[*countOfPairs-1].word1,(*arr)[indFirstWord].word);
+            strcpy((*newArr)[*countOfPairs-1].word2,(*arr)[indSecondWord].word);
 
 
             for (int i = indFirstWord; i < size - 1; i++)
             {
-                (*arr)[i] = (*arr)[i + 1];
+                free((*arr)[i].word);
+                (*arr)[i].word =(char*)malloc(sizeof(char)*(1+strlen((*arr)[i+1].word)));
+                strcpy((*arr)[i].word,(*arr)[i+1].word);
+                (*arr)[i].count=(*arr)[i+1].count;
             }
+            free((*arr)[size-1].word);
             size--;
             indSecondWord--;
             for (int i = indSecondWord; i < size - 1; i++)
             {
-                (*arr)[i] = (*arr)[i + 1];
+                (*arr)[i].word =(char*)realloc((*arr)[i].word,sizeof(char)*(1+strlen((*arr)[i+1].word)));
+                strcpy((*arr)[i].word,(*arr)[i+1].word);
+                (*arr)[i].count=(*arr)[i+1].count;
             }
+            free((*arr)[size-1].word);
             size--;
             (*arr) = (words *) realloc((*arr), sizeof(words) * size);
 
         }
 
     } while (max > 0);
-    *newSize = countOfPairs;
 }
 
 void compress(char *name)
