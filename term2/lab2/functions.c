@@ -206,13 +206,55 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
     } while (max > 0);
 
 }
+void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
+{
+    stack* head=NULL;
+    split(&source, &head);
+    stack* tmp=head;
+    while(tmp!=NULL)
+    {
+        for(int i =0; i<countOfPairs;i++)
+        {
+            if(strcmp(tmp->word,(*arrayOfPairs)[i].word1)==0)
+            {
+                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word2)+1));
+                strcpy(tmp->word,(*arrayOfPairs)[i].word2);
+            } else if(strcmp(tmp->word,(*arrayOfPairs)[i].word2)==0)
+            {
+                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word1)+1));
+                strcpy(tmp->word,(*arrayOfPairs)[i].word1);
+            }
+        }
+        tmp=tmp->next;
+    }
+    for (int i = 0; i <countOfPairs; ++i)
+    {
+        free((*arrayOfPairs)[i].word1);
+        free((*arrayOfPairs)[i].word2);
+    }
+    stack* newHead=NULL;
+    while(head!=NULL)
+    {
+        pushInStack(&newHead, head->word);
+        popOutOfStack(&head);
+    }
+    while(newHead!=NULL)
+    {
+        fputs(newHead->word,result);
+        fputs(" ",result);
+        popOutOfStack(&newHead);
+    }
+    free(head);
+    free(newHead);
+
+}
 
 void compress(char *name)
 {
     FILE *f = fopen(name, "rb");
     if (f == NULL) exit(EXIT_FAILURE);
     fseek(f, 0, SEEK_END);
-    printf("Size of file before compressing:%ld", ftell(f));
+    printf("Size of file before compressing:%ld\n", ftell(f));
     stack *head = NULL;
     fseek(f, 0, SEEK_SET);
     split(&f, &head);
@@ -220,12 +262,8 @@ void compress(char *name)
     words **arrayOfWords = (words **) malloc(sizeof(words *));
     int sizeOfArray = 0;
     putWordsInArray(&head, arrayOfWords, &sizeOfArray);
-    for(int i=0; i<sizeOfArray;i++)
-        puts((*arrayOfWords)[i].word);
     int countOfPair = 0;
     sortWords(arrayOfWords, sizeOfArray);
-    for(int i=0; i<sizeOfArray;i++)
-        puts((*arrayOfWords)[i].word);
     pairs *twoWords;
     pair(arrayOfWords, sizeOfArray, &twoWords, &countOfPair);
     for (int i = 0; i <sizeOfArray; i++)
@@ -241,8 +279,6 @@ void compress(char *name)
     {
         exit(EXIT_FAILURE);
     }
-    puts(twoWords[0].word1);
-    puts(twoWords[0].word2);
     for (int i = 0; i < countOfPair; i++)
     {
         fputs(twoWords[i].word1,f);
@@ -256,10 +292,62 @@ void compress(char *name)
     f= fopen(name,"rb");
     if(file==NULL||f==NULL)
         exit(EXIT_FAILURE);
-
+    replace(&twoWords,countOfPair,f,file);
+    long int lSize=ftell(file);
+    printf("Size of file after compressing:%ld\n", lSize);
+    fclose(file);
+    fclose(f);
 }
 
 void decompress(char *name)
 {
+    FILE *f = fopen(name, "rb");
+    if (f == NULL) exit(EXIT_FAILURE);
+    fseek(f, 0, SEEK_END);
+    printf("Size of file before compressing:%ld", ftell(f));
+    fclose(f);
+    char* nameAfterCompressing="";
+    nameAfterCompressing= (char*)calloc(((int)strlen(name) + (int)strlen(".compressed")+1), sizeof(char));
+    strcat(strcat(nameAfterCompressing, name), ".compressed");
+    f = fopen(nameAfterCompressing, "rb");
+    if (f == NULL) exit(EXIT_FAILURE);
+    stack* head=NULL;
+    char *string = (char *) malloc(sizeof(char) * (SIZE_OF_STRING));
+    while (!feof(f))
+    {
+        if (fgets(string, SIZE_OF_STRING, f) == NULL)
+        {
+            exit(EXIT_FAILURE);
+        }
+        if(strcmp(string,"@#$\n\0")==0)
+            break;
 
+        char *delim = " ";
+        char *token = strtok(string, delim);
+        while (token != NULL)
+        {
+            pushInStack(&head, token);
+            token = strtok(NULL, delim);
+        }
+    }
+    free(string);
+    int countOfPair = 0;
+    pairs *twoWords=calloc(1,1);
+    while(head!=NULL||head->next!=NULL)
+    {
+        twoWords = (pairs *) realloc(twoWords, sizeof(pairs) * (countOfPair+1));
+        twoWords[countOfPair].word1 = (char *) malloc(sizeof(char) * (1+strlen(head->word)));
+        strcpy(twoWords[countOfPair].word1,head->word);
+        popOutOfStack(&head);
+        twoWords[countOfPair].word2 = (char *) malloc(sizeof(char) * (1+strlen(head->word)));
+        strcpy(twoWords[countOfPair].word2, head->word);
+        popOutOfStack(&head);
+        countOfPair++;
+    }
+    char* nameAfterDecompressing="";
+    nameAfterDecompressing= (char*)calloc(((int)strlen(name) + (int)strlen(".decompressed")+1), sizeof(char));
+    strcat(strcat(nameAfterDecompressing, name), ".decompressed");
+    FILE* result = fopen(nameAfterDecompressing, "rb");
+    replace(&twoWords,countOfPair,result,f);
+    printf("Size of file after decompressing:%ld", ftell(result));
 }
