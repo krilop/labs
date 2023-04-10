@@ -33,7 +33,7 @@ add_executable(lab8 term1/lab8/main.c term1/lab8/functions.c term1/lab8/header.h
 
 add_executable(lab9 term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h term2/lab1/basket.txt)
 
-add_executable(compress term2/lab2/compress.c term2/lab2/functions.c term2/lab2/functions.h term2/lab2/file/book.txt)
-add_executable(decompress term2/lab2/decompress.c term2/lab2/functions.c term2/lab2/functions.h)
+add_executable(compress term2/lab2/compress.c term2/lab2/functionsForCompressing.c term2/lab2/functionsForCompressing.h term2/lab2/file/book.txt)
+add_executable(decompress term2/lab2/decompress.c term2/lab2/functionsForDecompressing.c term2/lab2/functionsForDecompressing.h term2/lab2/file/book.txt)
 
 add_executable(test test/main.c test/functions.c test/functions.h)

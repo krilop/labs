@@ -2,7 +2,7 @@
 // Created by krilop on 12.02.23.
 //
 
-#ifndef _FUNCTIONS_H_
+#ifndef _FUNCTIONSFORDECOMPRESSING_H_
 #define _FUNCTIONS_H_
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,4 +33,4 @@ void printArrayOfStruct(t** array, int size);
 void initializateObjectOfStruct(t** array, int *sizeOfArray);
 void deleteObjectOfStruct(t** array, int* sizeOfArray);
 void menu(t **array, int *sizeOfArr);
-#endif //_FUNCTIONS_H_
+#endif //_FUNCTIONSFORDECOMPRESSING_H_

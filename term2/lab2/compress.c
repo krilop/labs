@@ -1,7 +1,7 @@
 //
 // Created by krilop on 3/22/23.
 //
-#include "functions.h"
+#include "functionsForCompressing.h"
 
 int main(void)
 {
