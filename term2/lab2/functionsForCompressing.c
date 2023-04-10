@@ -64,6 +64,26 @@ void split(FILE **f, stack **head)
     }
     free(string);
 }
+void splitForReplace(FILE **f, stack**head)
+{
+    char *string = (char *) malloc(sizeof(char) * (SIZE_OF_STRING));
+    while (!feof(*f))
+    {
+        if (fgets(string, SIZE_OF_STRING, *f) == NULL)
+        {
+            exit(EXIT_FAILURE);
+        }
+        char *delim = " ";
+        char *token = strtok(string, delim);
+        while (token != NULL)
+        {
+            pushInStack(head, token);
+            token = strtok(NULL, delim);
+        }
+
+    }
+    free(string);
+}
 
 
 void putWordsInArray(stack **head, words **arrayOfWords, int *size)
@@ -193,20 +213,36 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
 void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
 {
     stack* head=NULL;
-    split(&source, &head);
+    splitForReplace(&source, &head);
     stack* tmp=head;
     while(tmp!=NULL)
     {
         for(int i =0; i<countOfPairs;i++)
         {
-            if(strcmp(tmp->word,(*arrayOfPairs)[i].word1)==0)
+            if(strstr(tmp->word,(*arrayOfPairs)[i].word1)!=NULL)
             {
-                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word2)+1));
+                int flag=0;
+                if((*arrayOfPairs)[i].word1[strlen((*arrayOfPairs)[i].word1)-1]=='\n')
+                    flag=1;
+                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word2)+1+flag));
                 strcpy(tmp->word,(*arrayOfPairs)[i].word2);
-            } else if(strcmp(tmp->word,(*arrayOfPairs)[i].word2)==0)
+                if(flag)
+                {
+                    tmp->word[strlen((*arrayOfPairs)[i].word2)-2]='\n';
+                    tmp->word[strlen((*arrayOfPairs)[i].word2)-1]='\0';
+                }
+            } else if(strstr(tmp->word,(*arrayOfPairs)[i].word2)!=NULL)
             {
-                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word1)+1));
+                int flag=0;
+                if((*arrayOfPairs)[i].word2[strlen((*arrayOfPairs)[i].word2)-1]=='\n')
+                    flag=1;
+                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word1)+1+flag));
                 strcpy(tmp->word,(*arrayOfPairs)[i].word1);
+                if(flag)
+                {
+                    tmp->word[strlen((*arrayOfPairs)[i].word1)-2]='\n';
+                    tmp->word[strlen((*arrayOfPairs)[i].word1)-1]='\0';
+                }
             }
         }
         tmp=tmp->next;
