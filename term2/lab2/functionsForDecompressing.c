@@ -122,61 +122,68 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
 }
 void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
 {
-    stack* head=NULL;
+    stack *head = NULL;
     split(&source, &head);
-    stack* tmp=head;
-    while(tmp!=NULL)
-    {
-        for(int i =0; i<countOfPairs;i++)
-        {
-            if(strstr(tmp->word,(*arrayOfPairs)[i].word1)!=NULL)
-            {
-                int flag=0;
-                if((*arrayOfPairs)[i].word1[strlen((*arrayOfPairs)[i].word1)-1]=='\n')
-                    flag=1;
-                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word2)+1+flag));
-                strcpy(tmp->word,(*arrayOfPairs)[i].word2);
-                if(flag)
-                {
-                    tmp->word[strlen((*arrayOfPairs)[i].word2)-2]='\n';
-                    tmp->word[strlen((*arrayOfPairs)[i].word2)-1]='\0';
-                }
-            } else if(strstr(tmp->word,(*arrayOfPairs)[i].word2)!=NULL)
-            {
-                int flag=0;
-                if((*arrayOfPairs)[i].word2[strlen((*arrayOfPairs)[i].word2)-1]=='\n')
-                    flag=1;
-                tmp->word=(char*)realloc(tmp->word,sizeof(char)*(strlen((*arrayOfPairs)[i].word1)+1+flag));
-                strcpy(tmp->word,(*arrayOfPairs)[i].word1);
-                if(flag)
-                {
-                    tmp->word[strlen((*arrayOfPairs)[i].word1)-2]='\n';
-                    tmp->word[strlen((*arrayOfPairs)[i].word1)-1]='\0';
-                }
-            }
-        }
-        tmp=tmp->next;
-    }
-    for (int i = 0; i <countOfPairs; ++i)
-    {
-        free((*arrayOfPairs)[i].word1);
-        free((*arrayOfPairs)[i].word2);
-    }
-    stack* newHead=NULL;
-    while(head!=NULL)
+    stack *newHead = NULL;
+    while (head != NULL)
     {
         pushInStack(&newHead, head->word);
         popOutOfStack(&head);
     }
-    while(newHead!=NULL)
+    stack *tmp = newHead;
+    char *buffer = (char *) malloc(SIZE_OF_STRING * sizeof(char));
+    while (tmp != NULL)
     {
-        fputs(newHead->word,result);
-        fputs(" ",result);
-        popOutOfStack(&newHead);
+        buffer = (char *) realloc(buffer, sizeof(char) * (strlen(tmp->word) + 1));
+        strcpy(buffer, tmp->word);
+        strtok(buffer, "\r\n");
+        int flag=0;
+        for (int i = 0; i < countOfPairs; i++)
+        {
+            if (strcmp(buffer, (*arrayOfPairs)[i].word1) == 0)
+            {
+                flag=1;
+                fputs((*arrayOfPairs)[i].word2, result);
+            }
+            else if (strcmp(buffer, (*arrayOfPairs)[i].word2) == 0)
+            {
+                flag=1;
+                fputs((*arrayOfPairs)[i].word1, result);
+            }
+            if(flag)
+            {
+                if (strchr(tmp->word,'\r') != 0)
+                    fputs("\r",result);
+                if (strchr(tmp->word,'\n') != 0)
+                {
+                    fputs("\n\0",result);
+                }
+                else
+                    fputs(" ",result);
+                break;
+            }
+        }
+        if(flag)
+        {
+            popOutOfStack(&tmp);
+            continue;
+        }
+        fputs(tmp->word,result);
+        if (strchr(tmp->word, '\n') != NULL)
+        {
+            fputs("\0", result);
+        } else
+            fputs(" ", result);
+        popOutOfStack(&tmp);
     }
-    free(head);
-    free(newHead);
+    free(buffer);
+    for (int i = 0; i < countOfPairs; ++i)
+    {
+        free((*arrayOfPairs)[i].word1);
+        free((*arrayOfPairs)[i].word2);
+    }
 
+    free(head);
 }
 void decompress(char *name)
 {
