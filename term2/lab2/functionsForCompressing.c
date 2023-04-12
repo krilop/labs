@@ -135,6 +135,7 @@ void sortWords(words **arr, int size)
 {
     for (int i = 0; i < size; i++)
     {
+        int flag=0;
         for (int j = 0; j < size; j++)
         {
             int countFirst = ((*arr)[i].count);
@@ -145,6 +146,7 @@ void sortWords(words **arr, int size)
             int profitSecondWord = lengthSecond * countSecond;
             if (profitFirstWord < profitSecondWord)
             {
+                flag=1;
                 words tmp;
                 tmp.word = (char *) malloc(sizeof(char) * (1 + strlen((*arr)[i].word)));
                 strcpy(tmp.word, (*arr)[i].word);
@@ -158,6 +160,8 @@ void sortWords(words **arr, int size)
                 free(tmp.word);
             }
         }
+        if(!flag)
+            break;
     }
 }
 
@@ -256,8 +260,8 @@ void replace(pairs **arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
             if(flag)
             {
                 if (strchr(tmp->word,'\r') != 0)
-                    fputs("\r",result);
-                if (strchr(tmp->word,'\n') != 0)
+                    fputs("\r\n\0",result);
+                else if (strchr(tmp->word,'\n') != 0)
                 {
                    fputs("\n\0",result);
                 }
@@ -272,10 +276,10 @@ void replace(pairs **arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
             continue;
         }
         fputs(tmp->word,result);
-        if (strchr(tmp->word, '\n') != NULL)
+        if (strchr(tmp->word,'\r') != NULL||strchr(tmp->word, '\n') != NULL)
         {
-            fputs("\0", result);
-        } else
+            fputs("\0",result);
+        }else
         fputs(" ", result);
         popOutOfStack(&tmp);
     }
