@@ -132,6 +132,18 @@ void putWordsInArray(stack **head, words **arrayOfWords, int *size)
     *size = i;
 }
 
+
+int calculateProfit(words ** arr, int i, int j)
+{
+    if((*arr)[i].count<=(*arr)[j].count)
+        return 0;
+    return (int) (strlen((*arr)[i].word) * (*arr)[i].count
+            + (strlen((*arr)[j].word) * (*arr)[j].count
+            - strlen((*arr)[i].word) * (*arr)[j].count
+            - strlen((*arr)[j].word) * (*arr)[i].count
+            -strlen((*arr)[i].word) -strlen((*arr)[i].word)- 2));
+}
+
 void sortWords(words **arr, int size)
 {
     for (int i = 0; i < size; i++)
@@ -139,20 +151,23 @@ void sortWords(words **arr, int size)
         int flag=0;
         for (int j = 0; j < size; j++)
         {
-            int profitFirstWord = (*arr)[i].length * ((*arr)[i].count);
-            int profitSecondWord = (*arr)[i].length * ((*arr)[j].count);
+            int countFirst = ((*arr)[i].count);
+            int countSecond = ((*arr)[j].count);
+            int lengthFirst = (int) strlen(((*arr)[i].word));
+            int lengthSecond = (int) strlen(((*arr)[j].word));
+            int profitFirstWord = lengthFirst * countFirst;
+            int profitSecondWord = lengthSecond * countSecond;
             if (profitFirstWord < profitSecondWord)
             {
                 flag=1;
                 words tmp;
-                tmp.word = (char *) malloc(sizeof(char) * (1 +(*arr)[i].length));
+                tmp.word = (char *) malloc(sizeof(char) * (1 + strlen((*arr)[i].word)));
                 strcpy(tmp.word, (*arr)[i].word);
-                tmp.length=(*arr)[i].length;
                 tmp.count = (*arr)[i].count;
-                (*arr)[i].word = (char *) realloc((*arr)[i].word, sizeof(char) * (1 + (*arr)[j].length));
+                (*arr)[i].word = (char *) realloc((*arr)[i].word, sizeof(char) * (1 + strlen((*arr)[j].word)));
                 strcpy((*arr)[i].word, (*arr)[j].word);
                 (*arr)[i].count = (*arr)[j].count;
-                (*arr)[j].word = (char *) realloc((*arr)[j].word, sizeof(char) * (1 + tmp.length));
+                (*arr)[j].word = (char *) realloc((*arr)[j].word, sizeof(char) * (1 + strlen(tmp.word)));
                 strcpy((*arr)[j].word, tmp.word);
                 (*arr)[j].count = tmp.count;
                 free(tmp.word);
@@ -189,20 +204,16 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
                 {
                     continue;
                 }
-                profit = (int) ((*arr)[i].length * (*arr)[i].count
-                        + (*arr)[j].length * (*arr)[j].count
-                        - (*arr)[i].length * (*arr)[j].count
-                        - (*arr)[j].length * (*arr)[i].count
-                        -(*arr)[i].length -(*arr)[j].length- 2);
+                profit = calculateProfit(arr,i,j);
                 if (profit > max)
                 {
                     max = profit;
 
-                    tmp1.word = (char *) realloc(tmp1.word, sizeof(char) * (1 + (*arr)[i].length));
+                    tmp1.word = (char *) realloc(tmp1.word, sizeof(char) * (1 + strlen((*arr)[i].word)));
                     strcpy(tmp1.word, (*arr)[i].word);
                     tmp1.count = (*arr)[i].count;
                     indFirstWord = i;
-                    tmp2.word = (char *) realloc(tmp2.word, sizeof(char) * (1 + (*arr)[j].length));
+                    tmp2.word = (char *) realloc(tmp2.word, sizeof(char) * (1 + strlen((*arr)[j].word)));
                     strcpy(tmp2.word, (*arr)[j].word);
                     tmp2.count = (*arr)[j].count;
                     indSecondWord = j;
@@ -225,7 +236,6 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
     } while (max > 0);
 
 }
-
 void replace(pairs **arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
 {
     stack *head = NULL;
