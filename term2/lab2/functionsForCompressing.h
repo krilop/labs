@@ -19,6 +19,7 @@ typedef struct LIFO {
 typedef struct w {
     char *word;
     int count;
+    int length;
     int markAsUsed;
 } words;
 typedef struct p {
