@@ -194,7 +194,8 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
                 profit = (int) (strlen((*arr)[i].word) * (*arr)[i].count
                         + (strlen((*arr)[j].word) * (*arr)[j].count
                         - strlen((*arr)[i].word) * (*arr)[j].count
-                        - strlen((*arr)[j].word) * (*arr)[i].count - 2));
+                        - strlen((*arr)[j].word) * (*arr)[i].count
+                        -strlen((*arr)[i].word) -strlen((*arr)[i].word)- 2));
                 if (profit > max)
                 {
                     max = profit;
