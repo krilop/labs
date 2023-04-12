@@ -4,7 +4,7 @@
 
 #include "functionsForDecompressing.h"
 
-#define SIZE_OF_STRING 255
+#define SIZE_OF_STRING 500
 
 void pushInStack(stack **head, char *word)
 {
@@ -153,8 +153,8 @@ void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result
             if(flag)
             {
                 if (strchr(tmp->word,'\r') != 0)
-                    fputs("\r",result);
-                if (strchr(tmp->word,'\n') != 0)
+                    fputs("\r\n\0",result);
+                else if (strchr(tmp->word,'\n') != 0)
                 {
                     fputs("\n\0",result);
                 }
@@ -169,10 +169,10 @@ void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result
             continue;
         }
         fputs(tmp->word,result);
-        if (strchr(tmp->word, '\n') != NULL)
+        if (strchr(tmp->word,'\r') != NULL||strchr(tmp->word, '\n') != NULL)
         {
-            fputs("\0", result);
-        } else
+            fputs("\0",result);
+        }else
             fputs(" ", result);
         popOutOfStack(&tmp);
     }
@@ -184,6 +184,7 @@ void replace(pairs ** arrayOfPairs, int countOfPairs, FILE *source, FILE *result
     }
 
     free(head);
+
 }
 void decompress(char *name)
 {

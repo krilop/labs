@@ -4,7 +4,7 @@
 
 #include "functionsForCompressing.h"
 
-#define SIZE_OF_STRING 255
+#define SIZE_OF_STRING 550
 
 void pushInStack(stack **head, char *word)
 {
