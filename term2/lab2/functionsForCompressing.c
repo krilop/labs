@@ -135,13 +135,11 @@ void putWordsInArray(stack **head, words **arrayOfWords, int *size)
 
 int calculateProfit(words ** arr, int i, int j)
 {
-    if((*arr)[i].count<=(*arr)[j].count)
-        return 0;
-    return (int) (strlen((*arr)[i].word) * (*arr)[i].count
-            + (strlen((*arr)[j].word) * (*arr)[j].count
-            - strlen((*arr)[i].word) * (*arr)[j].count
-            - strlen((*arr)[j].word) * (*arr)[i].count
-            -strlen((*arr)[i].word) -strlen((*arr)[i].word)- 2));
+    return (int) ((*arr)[i].length * (*arr)[i].count
+            + (*arr)[j].length * (*arr)[j].count
+            - (*arr)[i].length * (*arr)[j].count
+            - (*arr)[j].length * (*arr)[i].count
+            -(*arr)[i].length -(*arr)[i].length- 2);
 }
 
 void sortWords(words **arr, int size)
@@ -153,23 +151,26 @@ void sortWords(words **arr, int size)
         {
             int countFirst = ((*arr)[i].count);
             int countSecond = ((*arr)[j].count);
-            int lengthFirst = (int) strlen(((*arr)[i].word));
-            int lengthSecond = (int) strlen(((*arr)[j].word));
+            int lengthFirst = (int) ((*arr)[i].length);
+            int lengthSecond = (int) ((*arr)[j].length);
             int profitFirstWord = lengthFirst * countFirst;
             int profitSecondWord = lengthSecond * countSecond;
             if (profitFirstWord < profitSecondWord)
             {
                 flag=1;
                 words tmp;
-                tmp.word = (char *) malloc(sizeof(char) * (1 + strlen((*arr)[i].word)));
+                tmp.word = (char *) malloc(sizeof(char) * (1 + (*arr)[i].length));
                 strcpy(tmp.word, (*arr)[i].word);
                 tmp.count = (*arr)[i].count;
-                (*arr)[i].word = (char *) realloc((*arr)[i].word, sizeof(char) * (1 + strlen((*arr)[j].word)));
+                tmp.length=(*arr)[i].length;
+                (*arr)[i].word = (char *) realloc((*arr)[i].word, sizeof(char) * (1 + (*arr)[j].length));
                 strcpy((*arr)[i].word, (*arr)[j].word);
                 (*arr)[i].count = (*arr)[j].count;
-                (*arr)[j].word = (char *) realloc((*arr)[j].word, sizeof(char) * (1 + strlen(tmp.word)));
+                (*arr)[i].length=(*arr)[j].length;
+                (*arr)[j].word = (char *) realloc((*arr)[j].word, sizeof(char) * (1 + tmp.length));
                 strcpy((*arr)[j].word, tmp.word);
                 (*arr)[j].count = tmp.count;
+                (*arr)[j].length=tmp.length;
                 free(tmp.word);
             }
         }
@@ -188,52 +189,45 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
     tmp1.word = (char *) malloc(sizeof(char));
     tmp2.word = (char *) malloc(sizeof(char));
     (*newArr) = (pairs *) malloc(sizeof(pair));
-    do
-    {
-        max = 0;
 
+        max = 0;
         for (int i = 0; i < size; i++)
         {
             if ((*arr)[i].markAsUsed == 1)
             {
                 continue;
             }
-            for (int j = 0; j < size; j++)
-            {
-                if ((*arr)[j].markAsUsed == 1)
-                {
-                    continue;
-                }
-                profit = calculateProfit(arr,i,j);
-                if (profit > max)
+                profit = calculateProfit(arr,i,size-i);
+                /*if (profit > max)
                 {
                     max = profit;
 
-                    tmp1.word = (char *) realloc(tmp1.word, sizeof(char) * (1 + strlen((*arr)[i].word)));
+                    tmp1.word = (char *) realloc(tmp1.word, sizeof(char) * (1 + (*arr)[i].length));
                     strcpy(tmp1.word, (*arr)[i].word);
                     tmp1.count = (*arr)[i].count;
+                    tmp1.length = (*arr)[i].length;
                     indFirstWord = i;
-                    tmp2.word = (char *) realloc(tmp2.word, sizeof(char) * (1 + strlen((*arr)[j].word)));
-                    strcpy(tmp2.word, (*arr)[j].word);
-                    tmp2.count = (*arr)[j].count;
-                    indSecondWord = j;
-                }
+                    tmp2.word = (char *) realloc(tmp2.word, sizeof(char) * (1 + (*arr)[size-i].length));
+                    strcpy(tmp2.word, (*arr)[size-i].word);
+                    tmp2.count = (*arr)[size-i].count;
+                    tmp2.length = (*arr)[size-i].length;
+                    indSecondWord = ;
+                }*/
+            if (profit > 0)
+            {
+                (*countOfPairs)++;
+                //Занести слово1 с индексом первого в пару, занести слово2 с индексом второго
+                (*newArr) = (pairs *) realloc((*newArr), sizeof(pairs) * (*countOfPairs));
+                (*newArr)[*countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1 + (*arr)[i].length));
+                (*newArr)[*countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1 + (*arr)[size-i].length));
+                strcpy((*newArr)[*countOfPairs - 1].word1, (*arr)[i].word);
+                strcpy((*newArr)[*countOfPairs - 1].word2, (*arr)[size-i].word);
+                (*arr)[i].markAsUsed = 1;
+                (*arr)[size-i].markAsUsed = 1;
             }
-        }
-        if (max > 0)
-        {
-            (*countOfPairs)++;
-            //Занести слово1 с индексом первого в пару, занести слово2 с индексом второго
-            (*newArr) = (pairs *) realloc((*newArr), sizeof(pairs) * (*countOfPairs));
-            (*newArr)[*countOfPairs - 1].word1 = (char *) malloc(sizeof(char) * (1 + strlen((*arr)[indFirstWord].word)));
-            (*newArr)[*countOfPairs - 1].word2 = (char *) malloc(sizeof(char) * (1 + strlen((*arr)[indSecondWord].word)));
-            strcpy((*newArr)[*countOfPairs - 1].word1, (*arr)[indFirstWord].word);
-            strcpy((*newArr)[*countOfPairs - 1].word2, (*arr)[indSecondWord].word);
-            (*arr)[indFirstWord].markAsUsed = 1;
-            (*arr)[indSecondWord].markAsUsed = 1;
+           // printf("%d\n",(int)(i*100/size));
         }
 
-    } while (max > 0);
 
 }
 void replace(pairs **arrayOfPairs, int countOfPairs, FILE *source, FILE *result)
