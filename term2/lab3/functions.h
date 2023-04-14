@@ -4,13 +4,30 @@
 
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 #include <locale.h>
 
-typedef struct{
+static char* operations[]={
+
+        "Negative\n",
+        "White&Black\n",
+        "Median filter\n",
+        "Gamma correction\n",
+        "Exit\n"
+};
+typedef enum oper{
+    NEGATIVE,
+    WNB,
+    MEDIAN,
+    GAMMA,
+    EXIT
+};
+
+typedef struct {
     unsigned short int bfType;
     unsigned int bfSize;
     unsigned int bfReserved;
@@ -27,19 +44,21 @@ typedef struct{
     unsigned int biClrUsed;
     unsigned int biClrImportant;
 } infoHeaderBitMap;
-typedef struct{
+typedef struct {
     unsigned char blue;
     unsigned char green;
     unsigned char red;
 } pixelBitMap;
-typedef struct{
+typedef struct {
     unsigned char blue;
     unsigned char green;
     unsigned char red;
     unsigned char reserved;
 } paletteBitMap;
 
-int checkBitCount(infoHeaderBitMap header, int * lessThanEight);
+int checkBitCount(infoHeaderBitMap header, int *lessThanEight);
+
+void menu(infoHeaderBitMap header);
 
 
 #endif //_FUNCTIONS_H_
