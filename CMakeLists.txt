@@ -36,4 +36,6 @@ add_executable(lab9 term2/lab1/main.c term2/lab1/functions.c term2/lab1/function
 add_executable(compress term2/lab2/compress.c term2/lab2/functionsForCompressing.c term2/lab2/functionsForCompressing.h term2/lab2/file/book.txt)
 add_executable(decompress term2/lab2/decompress.c term2/lab2/functionsForDecompressing.c term2/lab2/functionsForDecompressing.h term2/lab2/file/book.txt)
 
+add_executable(lab10 term2/lab3/main.c term2/lab3/functions.h term2/lab3/functions.c)
+
 add_executable(test test/main.c test/functions.c test/functions.h)
