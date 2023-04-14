@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     {
         exit(EXIT_FILE_OPEN_ERROR);
     }
-    return 0;
+
     infoHeaderBitMap header;
     fread(&header, sizeof(header), 1, resource);
     int lessThanEight = 0;
@@ -37,6 +37,9 @@ int main(int argc, char **argv)
     fread(arrayOfPixels,sizeof(pixelBitMap),header.biWidth*header.biHeight,resource);*/
     menu(header);
 
+
+
+    return 0;
 }
 
 
