@@ -20,11 +20,13 @@ int main(int argc, char **argv)
     {
         exit(EXIT_FILE_OPEN_ERROR);
     }
-
-    infoHeaderBitMap header;
+    fseek(resource,0,SEEK_SET);
+    headerFileBitMap header;
     fread(&header, sizeof(header), 1, resource);
+    infoHeaderBitMap info;
+    fread(&info, sizeof(info), 1, resource);
     int lessThanEight = 0;
-    if (header.bfType != 0x4D42 || checkBitCount(header, &lessThanEight))
+    if (header.bfType != 0x4D42 || checkBitCount(info, &lessThanEight))
     {
         exit(EXIT_UNCORRECT_FORMAT_ERROR);
     }
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
         exit(EXIT_MEMORY_ALLOCATION_ERROR);
     fseek(resource,header.bfOffBits,SEEK_SET);
     fread(arrayOfPixels,sizeof(pixelBitMap),header.biWidth*header.biHeight,resource);*/
-    menu(header);
+    menu(info);
 
 
 

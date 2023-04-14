@@ -4,13 +4,13 @@
 
 #include "functions.h"
 #define END_OF_PROGRAMM 5
-int checkBitCount(infoHeaderBitMap header, int *lessThanEight)
+int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
 {
-    if (header.biBitCount == 24 || header.biBitCount == 16)
+    if (info.biBitCount == 24 || info.biBitCount == 16)
     {
         return 0;
     }
-    else if (header.biBitCount == 4 || header.biBitCount == 2 || header.biBitCount == 1)
+    else if (info.biBitCount == 4 || info.biBitCount == 2 || info.biBitCount == 1)
     {
         *lessThanEight = 1;
         return 0;
@@ -68,7 +68,7 @@ int checkBitCount(infoHeaderBitMap header, int *lessThanEight)
 
 
 
-void menu(infoHeaderBitMap header)
+void menu(infoHeaderBitMap info)
 {
     int choice=1;
     while(choice!=END_OF_PROGRAMM)
