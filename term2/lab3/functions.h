@@ -10,9 +10,8 @@
 #include <time.h>
 #include <string.h>
 #include <locale.h>
-
+#pragma pack(push, 1)
 static char* operations[]={
-
         "Negative\n",
         "White&Black\n",
         "Median filter\n",
@@ -28,10 +27,10 @@ typedef enum oper{
 };
 
 typedef struct{
-    unsigned char bfType;//Отметка для отличия формата от других (сигнатура формата)
+    unsigned short int bfType;//Отметка для отличия формата от других (сигнатура формата)
     unsigned int bfSize;//Размер файла в байтах.
-    unsigned char reserved1;//Зарезервированы и должны содержать ноль.
-    unsigned char reserved2;//
+    unsigned short int reserved1;//Зарезервированы и должны содержать ноль.
+    unsigned short int reserved2;//
     unsigned int bfOffBits;//Положение пиксельных данных относительно начала данной структуры (в байтах).
 }headerFileBitMap;
 typedef struct {
@@ -58,7 +57,7 @@ typedef struct {
     unsigned char red;
     unsigned char reserved;
 } paletteBitMap;
-
+#pragma pack(pop)
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 
 void menu(infoHeaderBitMap info);

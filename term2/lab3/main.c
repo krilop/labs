@@ -12,7 +12,6 @@ int main(int argc, char **argv)
     {
         exit(EXIT_COUNT_OF_ARGS_ERROR);
     }
-    printf("%s", argv[1]);
     char *nameOfFileResource = (char *) calloc(strlen(argv[1]) + strlen("../term2/lab3/") + 1, 1);
     strcat(strcat(nameOfFileResource, "../term2/lab3/"), argv[1]);
     FILE *resource = fopen(nameOfFileResource, "rb");
