@@ -24,7 +24,7 @@ typedef enum oper{
     MEDIAN,
     GAMMA,
     EXIT
-};
+}operation;
 
 typedef struct{
     unsigned short int bfType;//Отметка для отличия формата от других (сигнатура формата)
@@ -47,9 +47,9 @@ typedef struct {
     unsigned int biClrImportant;//Количество ячеек от начала таблицы цветов до последней используемой (включая её саму).
 } infoHeaderBitMap;
 typedef struct {
-    unsigned char blue;
-    unsigned char green;
     unsigned char red;
+    unsigned char green;
+    unsigned char blue;
 } pixelBitMap;
 typedef struct {
     unsigned char blue;
@@ -60,7 +60,7 @@ typedef struct {
 #pragma pack(pop)
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 
-void menu(infoHeaderBitMap info);
+void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE** in);
 
 
 #endif //_FUNCTIONS_H_
