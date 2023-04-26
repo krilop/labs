@@ -20,6 +20,27 @@ int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
     else
     {return 1;}
 }
+
+void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName)
+{
+    FILE* result=fopen(resultName,"wb");
+    fwrite(&header,sizeof(headerFileBitMap),1,result);
+    fwrite(&info,sizeof(infoHeaderBitMap),1,result);
+    pixelBitMap pixel;
+    for (int y = 0; y <info.biHeight ; y++)
+    {
+        for (int x = 0; x <info.biWidth ; x++)
+        {
+            fread(&pixel, sizeof(pixelBitMap),1, *in);
+            unsigned char average = (unsigned char)((pixel.green+pixel.blue+pixel.red)/3);
+            pixel.red=average;
+            pixel.green=average;
+            pixel.blue=average;
+            fwrite(&pixel, sizeof(pixelBitMap),1,result);
+        }
+    }
+
+}
 void negative(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName)
 {
     FILE* result=fopen(resultName,"wb");
@@ -69,11 +90,11 @@ void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE
             case 1:
             {//негатив
                 negative(in, header, info, formName(result,"negative_"));
-
                 break;
             }
             case 2:
             {
+                wnb(in, header, info, formName(result,"WnB_"));
              //черно-белый
                 break;
             }

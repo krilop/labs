@@ -25,13 +25,8 @@ int main(int argc, char **argv)
     fread(&info, sizeof(info), 1, resource);
     int lessThanEight = 0;
     if (header.bfType != 0x4D42 || checkBitCount(info, &lessThanEight))
-    {
         exit(EXIT_UNCORRECT_FORMAT_ERROR);
-    }
-
     menu(nameOfFileResource, header, info, &resource);
-
-
 
     return 0;
 }

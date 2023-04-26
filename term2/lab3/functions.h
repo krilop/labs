@@ -63,4 +63,6 @@ int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE** in);
 
 
+//void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName);
+
 #endif //_FUNCTIONS_H_
