@@ -51,12 +51,14 @@ typedef struct {
     unsigned char green;
     unsigned char blue;
 } pixelBitMap;
+/*
 typedef struct {
     unsigned char blue;
     unsigned char green;
     unsigned char red;
     unsigned char reserved;
 } paletteBitMap;
+ */
 #pragma pack(pop)
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 

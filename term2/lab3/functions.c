@@ -22,15 +22,38 @@ int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
 }
 
 
-pixelBitMap getPixel(pixelBitMap * arrayOfPix, int height,int width,int y,int x)
+pixelBitMap getPixel(pixelBitMap *arrayOfPix, int height, int width, int y, int x)
 {
-    if(x>=0&&x<width&&y>=0&&y<height)
-        return arrayOfPix[y*width+x];
+    if (x >= 0 && x < width && y >= 0 && y < height)
+    {
+        return arrayOfPix[y * width + x];
+    }
     else
     {
-        pixelBitMap nullPix={0,0,0};
+        pixelBitMap nullPix = {0, 0, 0};
         return nullPix;
     }
+}
+void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
+{
+
+    FILE *result = fopen(resultName, "wb");
+    fwrite(&header, sizeof(headerFileBitMap), 1, result);
+    fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
+    pixelBitMap *arrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
+    fread(arrayOfPixels, sizeof(pixelBitMap), info.biWidth * info.biHeight, *in);
+
+
+    pixelBitMap *newArrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
+
+    float gamma = 0;
+    printf("Enter gamma koeff for gamma correction: \n");
+    while (scanf("%lf", &gamma) != 1 || gamma < 0.1 || gamma > 5.0 ||gamma ==1.0|| getchar() != '\n')
+    {
+        printf("Error! try again");
+        rewind(stdin);
+    }
+
 }
 void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
 {
@@ -38,54 +61,51 @@ void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, cha
     FILE *result = fopen(resultName, "wb");
     fwrite(&header, sizeof(headerFileBitMap), 1, result);
     fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
-    pixelBitMap* arrayOfPixels=(pixelBitMap*)malloc(info.biWidth*info.biHeight*sizeof(pixelBitMap));
-    fread(arrayOfPixels,  sizeof(pixelBitMap), (info.biHeight)*(info.biHeight),*in);
+    pixelBitMap *arrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
+    fread(arrayOfPixels, sizeof(pixelBitMap), info.biWidth * info.biHeight, *in);
 
-    pixelBitMap* newArrayOfPixels=(pixelBitMap*)malloc(info.biWidth*info.biHeight*sizeof(pixelBitMap));
 
-    int kernelSize=0;
+    pixelBitMap *newArrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
+
+    int kernelSize = 0;
     printf("Enter size of kernel for median filter: \n");
-    while(scanf("%d",&kernelSize)!=1||kernelSize<2||kernelSize>20||getchar()!='\n')
+    while (scanf("%d", &kernelSize) != 1 || kernelSize < 2 || kernelSize > 20 || getchar() != '\n')
     {
         printf("Error! try again");
         rewind(stdin);
     }
-    int offset=kernelSize/2;
-    pixelBitMap * kernel=malloc(kernelSize*kernelSize*sizeof(pixelBitMap));
-    for (int i = 0; i <info.biHeight ; ++i)
+    int offset = kernelSize / 2;
+    pixelBitMap *kernel = malloc(kernelSize * kernelSize * sizeof(pixelBitMap));
+    for (int i = 0; i < info.biHeight; i++)
     {
-        for (int j = 0; j <info.biWidth ; ++j)
+        for (int j = 0; j < info.biWidth; j++)
         {
-            int indOfPixel=0;
-            for (int k = -offset; k <=offset ; ++k)
+            int indOfPixel = 0;
+            for (int k = -offset; k <= offset; k++)
             {
-                for (int l = -offset; l <=offset ; ++l)
+                for (int l = -offset; l <= offset; l++)
                 {
-                   pixelBitMap tmp=getPixel(arrayOfPixels, info.biHeight, info.biWidth, i+k,j+l);
-                   kernel[indOfPixel]=tmp;
-                   indOfPixel++;
+                    pixelBitMap tmp = getPixel(arrayOfPixels, info.biHeight, info.biWidth, i + k, j + l);
+                    kernel[indOfPixel] = tmp;
+                    indOfPixel++;
                 }
             }
-
-            for (int k = 0; k <indOfPixel ; ++k)
+            for (int k = 0; k < kernelSize * kernelSize; k++)
             {
-                for (int l = 0; l <indOfPixel ; ++l)
+                for (int l = k + 1; l < kernelSize * kernelSize; l++)
                 {
-                   if(kernel[k].red+kernel[k].blue+kernel[k].green<kernel[l].red+kernel[l].blue+kernel[l].green)
-                   {
-                       pixelBitMap tmp=kernel[k];
-                       kernel[k]=kernel[l];
-                       kernel[l]=tmp;
-                   }
+                    if (kernel[k].red + kernel[k].blue + kernel[k].green > kernel[l].red + kernel[l].blue + kernel[l].green)
+                    {
+                        pixelBitMap tmp = kernel[k];
+                        kernel[k] = kernel[l];
+                        kernel[l] = tmp;
+                    }
                 }
             }
-
-            newArrayOfPixels[i*info.biWidth+j]=kernel[kernelSize*kernelSize/2];
+            newArrayOfPixels[i * info.biWidth + j] = kernel[(int) (kernelSize * kernelSize / 2)];
         }
-
     }
-
-    fwrite(newArrayOfPixels,  sizeof(pixelBitMap), info.biHeight*info.biHeight,result);
+    fwrite(newArrayOfPixels, sizeof(pixelBitMap), info.biHeight * info.biWidth, result);
 }
 
 void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
@@ -107,7 +127,7 @@ void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *result
         }
     }
     fclose(result);
-    free(result);
+
 }
 
 void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
@@ -129,7 +149,6 @@ void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *r
     }
 
     fclose(result);
-    free(result);
 }
 
 char *formName(char *nameOfFile, char *add)
@@ -178,6 +197,7 @@ void menu(char *nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE
             }
             case 4:
             {
+                gammaCorrection(in, header, info, formName(result, "gamma_correction_"));
                 break;
             }
             case 5:
