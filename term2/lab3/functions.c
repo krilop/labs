@@ -21,61 +21,134 @@ int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
     {return 1;}
 }
 
-void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName)
+
+pixelBitMap getPixel(pixelBitMap * arrayOfPix, int height,int width,int y,int x)
 {
-    FILE* result=fopen(resultName,"wb");
-    fwrite(&header,sizeof(headerFileBitMap),1,result);
-    fwrite(&info,sizeof(infoHeaderBitMap),1,result);
-    pixelBitMap pixel;
-    for (int y = 0; y <info.biHeight ; y++)
+    if(x>=0&&x<width&&y>=0&&y<height)
+        return arrayOfPix[y*width+x];
+    else
     {
-        for (int x = 0; x <info.biWidth ; x++)
+        pixelBitMap nullPix={0,0,0};
+        return nullPix;
+    }
+}
+void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
+{
+
+    FILE *result = fopen(resultName, "wb");
+    fwrite(&header, sizeof(headerFileBitMap), 1, result);
+    fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
+    pixelBitMap* arrayOfPixels=(pixelBitMap*)malloc(info.biWidth*info.biHeight*sizeof(pixelBitMap));
+    fread(arrayOfPixels,  sizeof(pixelBitMap), (info.biHeight)*(info.biHeight),*in);
+
+    pixelBitMap* newArrayOfPixels=(pixelBitMap*)malloc(info.biWidth*info.biHeight*sizeof(pixelBitMap));
+
+    int kernelSize=0;
+    printf("Enter size of kernel for median filter: \n");
+    while(scanf("%d",&kernelSize)!=1||kernelSize<2||kernelSize>20||getchar()!='\n')
+    {
+        printf("Error! try again");
+        rewind(stdin);
+    }
+    int offset=kernelSize/2;
+    pixelBitMap * kernel=malloc(kernelSize*kernelSize*sizeof(pixelBitMap));
+    for (int i = 0; i <info.biHeight ; ++i)
+    {
+        for (int j = 0; j <info.biWidth ; ++j)
         {
-            fread(&pixel, sizeof(pixelBitMap),1, *in);
-            unsigned char average = (unsigned char)((pixel.green+pixel.blue+pixel.red)/3);
-            pixel.red=average;
-            pixel.green=average;
-            pixel.blue=average;
-            fwrite(&pixel, sizeof(pixelBitMap),1,result);
+            int indOfPixel=0;
+            for (int k = -offset; k <=offset ; ++k)
+            {
+                for (int l = -offset; l <=offset ; ++l)
+                {
+                   pixelBitMap tmp=getPixel(arrayOfPixels, info.biHeight, info.biWidth, i+k,j+l);
+                   kernel[indOfPixel]=tmp;
+                   indOfPixel++;
+                }
+            }
+
+            for (int k = 0; k <indOfPixel ; ++k)
+            {
+                for (int l = 0; l <indOfPixel ; ++l)
+                {
+                   if(kernel[k].red+kernel[k].blue+kernel[k].green<kernel[l].red+kernel[l].blue+kernel[l].green)
+                   {
+                       pixelBitMap tmp=kernel[k];
+                       kernel[k]=kernel[l];
+                       kernel[l]=tmp;
+                   }
+                }
+            }
+
+            newArrayOfPixels[i*info.biWidth+j]=kernel[kernelSize*kernelSize/2];
+        }
+
+    }
+
+    fwrite(newArrayOfPixels,  sizeof(pixelBitMap), info.biHeight*info.biHeight,result);
+}
+
+void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
+{
+    FILE *result = fopen(resultName, "wb");
+    fwrite(&header, sizeof(headerFileBitMap), 1, result);
+    fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
+    pixelBitMap pixel;
+    for (int y = 0; y < info.biHeight; y++)
+    {
+        for (int x = 0; x < info.biWidth; x++)
+        {
+            fread(&pixel, sizeof(pixelBitMap), 1, *in);
+            unsigned char average = (unsigned char) ((pixel.green + pixel.blue + pixel.red) / 3);
+            pixel.red = average;
+            pixel.green = average;
+            pixel.blue = average;
+            fwrite(&pixel, sizeof(pixelBitMap), 1, result);
+        }
+    }
+    fclose(result);
+    free(result);
+}
+
+void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
+{
+    FILE *result = fopen(resultName, "wb");
+    fwrite(&header, sizeof(headerFileBitMap), 1, result);
+    fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
+    pixelBitMap pixel;
+    for (int y = 0; y < info.biHeight; y++)
+    {
+        for (int x = 0; x < info.biWidth; x++)
+        {
+            fread(&pixel, sizeof(pixelBitMap), 1, *in);
+            pixel.red = 255 - pixel.red;
+            pixel.green = 255 - pixel.green;
+            pixel.blue = 255 - pixel.blue;
+            fwrite(&pixel, sizeof(pixelBitMap), 1, result);
         }
     }
 
+    fclose(result);
+    free(result);
 }
-void negative(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName)
-{
-    FILE* result=fopen(resultName,"wb");
-    fwrite(&header,sizeof(headerFileBitMap),1,result);
-    fwrite(&info,sizeof(infoHeaderBitMap),1,result);
-    pixelBitMap pixel;
-    for (int y = 0; y <info.biHeight ; y++)
-    {
-        for (int x = 0; x <info.biWidth ; x++)
-        {
-            fread(&pixel, sizeof(pixelBitMap),1, *in);
-            pixel.red=255-pixel.red;
-            pixel.green=255-pixel.green;
-            pixel.blue=255-pixel.blue;
-            fwrite(&pixel, sizeof(pixelBitMap),1,result);
-        }
-    }
 
-}
-char* formName(char* nameOfFile, char* add)
+char *formName(char *nameOfFile, char *add)
 {
 
-    char* result=(char*)calloc(strlen(nameOfFile)+strlen(add)+1,sizeof(char));
-    nameOfFile=strrchr(nameOfFile,'/')+1;
-    result=strcpy(result,"../term2/lab3/");
-    result=strcat(result,add);
-    result=strcat(result,nameOfFile);
-    result[strlen(result)]='\0';
+    char *result = (char *) calloc(strlen(nameOfFile) + strlen(add) + 1, sizeof(char));
+    nameOfFile = strrchr(nameOfFile, '/') + 1;
+    result = strcpy(result, "../term2/lab3/");
+    result = strcat(result, add);
+    result = strcat(result, nameOfFile);
+    result[strlen(result)] = '\0';
     return result;
 }
-void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE** in)
+
+void menu(char *nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE **in)
 {
-    char* result=(char*)calloc(strlen(nameOfFile)+1,sizeof(char));
-    result=strcpy(result, nameOfFile);
-    result[strlen(nameOfFile)]='\0';
+    char *result = (char *) calloc(strlen(nameOfFile) + 1, sizeof(char));
+    result = strcpy(result, nameOfFile);
+    result[strlen(nameOfFile)] = '\0';
     int choice = 1;
     while (choice != END_OF_PROGRAMM)
     {
@@ -89,17 +162,18 @@ void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE
         {
             case 1:
             {//негатив
-                negative(in, header, info, formName(result,"negative_"));
+                negative(in, header, info, formName(result, "negative_"));
                 break;
             }
             case 2:
             {
-                wnb(in, header, info, formName(result,"WnB_"));
-             //черно-белый
+                wnb(in, header, info, formName(result, "WnB_"));
+                //черно-белый
                 break;
             }
             case 3:
             {
+                medianFilter(in, header, info, formName(result, "median_filter_"));
                 break;
             }
             case 4:
