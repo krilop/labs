@@ -59,7 +59,7 @@ void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, 
             string[j]=(unsigned char)tmp1;
         }
         fwrite(string,sizeof(unsigned char),info.biWidth*BYTE_PIXEL,result);
-        //fwrite(&string[info.biWidth*BYTE_PIXEL],padding*sizeof(unsigned char),1,result);
+        fwrite(&string[info.biWidth*BYTE_PIXEL],padding*sizeof(unsigned char),1,result);
     }
     fclose(result);
 
