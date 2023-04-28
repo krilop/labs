@@ -5,11 +5,14 @@
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 #include <locale.h>
+
+
 #pragma pack(push, 1)
 static char* operations[]={
         "Negative\n",
@@ -64,7 +67,12 @@ int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 
 void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE** in);
 
-
+pixelBitMap getPixel(pixelBitMap *arrayOfPix, int height, int width, int y, int x);
+void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+char *formName(char *nameOfFile, char *add);
 //void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName);
 
 #endif //_FUNCTIONS_H_

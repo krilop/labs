@@ -38,4 +38,6 @@ add_executable(decompress term2/lab2/decompress.c term2/lab2/functionsForDecompr
 
 add_executable(lab10 term2/lab3/main.c term2/lab3/functions.h term2/lab3/functions.c)
 
-add_executable(test test/main.c test/functions.c test/functions.h)
+add_executable(test test/main.c test/functions.h test/functions.c )
+
+target_link_libraries(lab10 m)

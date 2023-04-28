@@ -3,9 +3,8 @@
 //
 
 #include "functions.h"
-
 #define END_OF_PROGRAMM 5
-
+#define BYTE_PIXEL 3
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
 {
     if (info.biBitCount == 24 || info.biBitCount == 16)
@@ -40,19 +39,29 @@ void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, 
     FILE *result = fopen(resultName, "wb");
     fwrite(&header, sizeof(headerFileBitMap), 1, result);
     fwrite(&info, sizeof(infoHeaderBitMap), 1, result);
-    pixelBitMap *arrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
-    fread(arrayOfPixels, sizeof(pixelBitMap), info.biWidth * info.biHeight, *in);
-
-
-    pixelBitMap *newArrayOfPixels = (pixelBitMap *) malloc(info.biWidth * info.biHeight * sizeof(pixelBitMap));
 
     float gamma = 0;
     printf("Enter gamma koeff for gamma correction: \n");
-    while (scanf("%lf", &gamma) != 1 || gamma < 0.1 || gamma > 5.0 ||gamma ==1.0|| getchar() != '\n')
+    while (scanf("%fl", &gamma) != 1.0 || gamma < 0.1 || gamma > 5.0 ||gamma ==1.0|| getchar() != '\n')
     {
-        printf("Error! try again");
+        printf("Error! try again\n");
         rewind(stdin);
     }
+    int padding = (4-(info.biWidth*BYTE_PIXEL)%4)%4;
+    unsigned char * string =(unsigned char*)calloc((info.biWidth*BYTE_PIXEL+padding), sizeof(unsigned char));
+    for (int i = 0; i <info.biHeight ; i++)
+    {
+        fread(string,sizeof(unsigned char),BYTE_PIXEL*info.biWidth,*in);
+        for (int j = 0; j <info.biWidth*BYTE_PIXEL; j++)
+        {
+            int byte1=string[j];
+            double tmp1=pow(byte1/255.0,gamma)*255.0;
+            string[j]=(unsigned char)tmp1;
+        }
+        fwrite(string,sizeof(unsigned char),info.biWidth*BYTE_PIXEL,result);
+        //fwrite(&string[info.biWidth*BYTE_PIXEL],padding*sizeof(unsigned char),1,result);
+    }
+    fclose(result);
 
 }
 void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
