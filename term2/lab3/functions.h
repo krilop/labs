@@ -14,28 +14,28 @@
 
 
 #pragma pack(push, 1)
-static char* operations[]={
+static char *operations[] = {
         "Negative\n",
         "White&Black\n",
         "Median filter\n",
         "Gamma correction\n",
         "Exit\n"
 };
-typedef enum oper{
+typedef enum oper {
     NEGATIVE,
     WNB,
     MEDIAN,
     GAMMA,
     EXIT
-}operation;
+} operation;
 
-typedef struct{
+typedef struct {
     unsigned short int bfType;//Отметка для отличия формата от других (сигнатура формата)
     unsigned int bfSize;//Размер файла в байтах.
     unsigned short int reserved1;//Зарезервированы и должны содержать ноль.
     unsigned short int reserved2;//
     unsigned int bfOffBits;//Положение пиксельных данных относительно начала данной структуры (в байтах).
-}headerFileBitMap;
+} headerFileBitMap;
 typedef struct {
     unsigned int biSize;//Размер данной структуры в байтах, указывающий также на версию структуры
     int biWidth;//Ширина растра в пикселях.
@@ -63,15 +63,21 @@ typedef struct {
 } paletteBitMap;
  */
 #pragma pack(pop)
+
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
 
-void menu(char* nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE** in);
+void menu(char *nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE **in);
 
 pixelBitMap getPixel(pixelBitMap *arrayOfPix, int height, int width, int y, int x);
+
 void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+
 void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+
 void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+
 void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
+
 char *formName(char *nameOfFile, char *add);
 //void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName);
 

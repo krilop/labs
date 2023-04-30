@@ -3,8 +3,10 @@
 //
 
 #include "functions.h"
+
 #define END_OF_PROGRAMM 5
 #define BYTE_PIXEL 3
+
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight)
 {
     if (info.biBitCount == 24 || info.biBitCount == 16)
@@ -33,6 +35,7 @@ pixelBitMap getPixel(pixelBitMap *arrayOfPix, int height, int width, int y, int 
         return nullPix;
     }
 }
+
 void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
 {
 
@@ -42,28 +45,29 @@ void gammaCorrection(FILE **in, headerFileBitMap header, infoHeaderBitMap info, 
 
     float gamma = 0;
     printf("Enter gamma koeff for gamma correction: \n");
-    while (scanf("%fl", &gamma) != 1.0 || gamma < 0.1 || gamma > 5.0 ||gamma ==1.0|| getchar() != '\n')
+    while (scanf("%fl", &gamma) != 1.0 || gamma < 0.1 || gamma > 5.0 || gamma == 1.0 || getchar() != '\n')
     {
         printf("Error! try again\n");
         rewind(stdin);
     }
-    int padding = (4-(info.biWidth*BYTE_PIXEL)%4)%4;
-    unsigned char * string =(unsigned char*)calloc((info.biWidth*BYTE_PIXEL+padding), sizeof(unsigned char));
-    for (int i = 0; i <info.biHeight ; i++)
+    int padding = (4 - (info.biWidth * BYTE_PIXEL) % 4) % 4;
+    unsigned char *string = (unsigned char *) calloc((info.biWidth * BYTE_PIXEL + padding), sizeof(unsigned char));
+    for (int i = 0; i < info.biHeight; i++)
     {
-        fread(string,sizeof(unsigned char),BYTE_PIXEL*info.biWidth,*in);
-        for (int j = 0; j <info.biWidth*BYTE_PIXEL; j++)
+        fread(string, sizeof(unsigned char), BYTE_PIXEL * info.biWidth, *in);
+        for (int j = 0; j < info.biWidth * BYTE_PIXEL; j++)
         {
-            int byte1=string[j];
-            double tmp1=pow(byte1/255.0,gamma)*255.0;
-            string[j]=(unsigned char)tmp1;
+            int byte1 = string[j];
+            double tmp1 = pow(byte1 / 255.0, gamma) * 255.0;
+            string[j] = (unsigned char) tmp1;
         }
-        fwrite(string,sizeof(unsigned char),info.biWidth*BYTE_PIXEL,result);
-        fwrite(&string[info.biWidth*BYTE_PIXEL],padding*sizeof(unsigned char),1,result);
+        fwrite(string, sizeof(unsigned char), info.biWidth * BYTE_PIXEL, result);
+        fwrite(&string[info.biWidth * BYTE_PIXEL], padding * sizeof(unsigned char), 1, result);
     }
     fclose(result);
-
+    free(string);
 }
+
 void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
 {
 
@@ -115,6 +119,9 @@ void medianFilter(FILE **in, headerFileBitMap header, infoHeaderBitMap info, cha
         }
     }
     fwrite(newArrayOfPixels, sizeof(pixelBitMap), info.biHeight * info.biWidth, result);
+    fclose(result);
+    free(arrayOfPixels);
+    free(newArrayOfPixels);
 }
 
 void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName)
@@ -180,6 +187,7 @@ void menu(char *nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE
     int choice = 1;
     while (choice != END_OF_PROGRAMM)
     {
+        fseek(*in,sizeof(headerFileBitMap)+sizeof(infoHeaderBitMap),SEEK_SET);
         printf("Choose the operation:\n1.%s2.%s3.%s4.%s5.%s", operations[NEGATIVE], operations[WNB], operations[MEDIAN], operations[GAMMA], operations[EXIT]);
         while (scanf("%d", &choice) != 1 || choice < 1 || choice > 5 || getchar() != '\n')
         {
@@ -215,5 +223,5 @@ void menu(char *nameOfFile, headerFileBitMap header, infoHeaderBitMap info, FILE
             }
         }
     }
-
+    free(result);
 }

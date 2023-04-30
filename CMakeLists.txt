@@ -31,13 +31,15 @@ add_executable(lab7 term1/lab7/main.c term1/lab7/functions.c term1/lab7/header.h
 
 add_executable(lab8 term1/lab8/main.c term1/lab8/functions.c term1/lab8/header.h)
 
-add_executable(lab9 term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h term2/lab1/basket.txt)
+add_executable(parsing term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h term2/lab1/basket.txt)
 
 add_executable(compress term2/lab2/compress.c term2/lab2/functionsForCompressing.c term2/lab2/functionsForCompressing.h term2/lab2/file/book.txt)
 add_executable(decompress term2/lab2/decompress.c term2/lab2/functionsForDecompressing.c term2/lab2/functionsForDecompressing.h term2/lab2/file/book.txt)
 
-add_executable(lab10 term2/lab3/main.c term2/lab3/functions.h term2/lab3/functions.c)
+add_executable(bmpEditor term2/lab3/main.c term2/lab3/functions.h term2/lab3/functions.c)
+add_executable(acinatorGame term2/lab4/main.c term2/lab4/functions.h term2/lab4/functions.c)
 
 add_executable(test test/main.c test/functions.h test/functions.c )
 
-target_link_libraries(lab10 m)
+target_link_libraries(bmpEditor m)
+target_link_libraries(acinatorGame gtk+-3.0)

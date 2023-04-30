@@ -27,7 +27,8 @@ int main(int argc, char **argv)
     if (header.bfType != 0x4D42 || checkBitCount(info, &lessThanEight))
         exit(EXIT_UNCORRECT_FORMAT_ERROR);
     menu(nameOfFileResource, header, info, &resource);
-
+    free(nameOfFileResource);
+    fclose(resource);
     return 0;
 }
 
