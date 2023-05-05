@@ -58,7 +58,6 @@ void rightRotate(node* root)
     (*(*root).right).right=buffer;
     updateHeight((*root).right);
     updateHeight(root);
-    free(buffer);
 }
 void leftRotate(node* root)
 {
@@ -70,28 +69,21 @@ void leftRotate(node* root)
     (*(*root).left).left = buffer;
     updateHeight((*root).left);
     updateHeight(root);
-    free(buffer);
 }
 void balance(node* root)
 {
-    if (root == NULL)
+    if(root==NULL)
         return;
-    int balanceFactor = getBalance(root);
-    if (balanceFactor > 1)
+    int balance= getBalance(root);
+    if(balance==-2)
     {
-        if (getBalance((*root).right) < 0)
-        {
-            rightRotate((*root).right);
-        }
-        leftRotate(root);
-    }
-    else if (balanceFactor < -1)
-    {
-        if (getBalance((*root).left) > 0)
-        {
-            leftRotate((*root).left);
-        }
+        if(getBalance((*root).left)==1) leftRotate((*root).left);
         rightRotate(root);
+    }
+    else if(balance==2)
+    {
+        if(getBalance((*root).right)==1) rightRotate((*root).right);
+        leftRotate(root);
     }
 }
 void freeTree(node* root)
