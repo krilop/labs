@@ -9,29 +9,21 @@
 int getAnswer(char *question)
 {
     char tmp;
-   // char *ptr;
-   // while ((ptr = strchr(question, '\n')) != NULL) {
-   //     *ptr = '\0';
-   // }
-   // free(ptr);
-    if(strchr(question,'?')==NULL)
-        printf("Is ur character %s? (y/n)\n",question);
+    if (strchr(question, '?') == NULL)
+        printf("Is your character %s? (y/n)\n", question);
     else
-        printf("%s(y/n)\n", question);
-    while (scanf("%c", &tmp) != 1 || (tmp != 'y' && tmp != 'n')||getchar()!='\n')
+        printf("%s (y/n)\n", question);
+
+    while (scanf(" %c", &tmp) != 1 || (tmp != 'y' && tmp != 'n') || getchar() != '\n')
     {
         printf("Error! Try again..\n");
-        rewind(stdin);
-    }
-    if (tmp == 'y')
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
+        while (getchar() != '\n');
     }
 
+    if (tmp == 'y')
+        return 1;
+    else
+        return 0;
 }
 void ask(node *question)
 {
@@ -47,9 +39,6 @@ void ask(node *question)
         fgets(buffer,SIZE_OF_STRING,stdin);
         (*question).left= newNode((*question).question);
         (*question).right= newNode(buffer);
-        updateHeight((*question).left);
-        updateHeight((*question).right);
-        updateHeight(question);
         printf("Special characteristic of my variant?\n");
         fgets(buffer,SIZE_OF_STRING,stdin);
         (*question).question=(char*)realloc((*question).question, sizeof(char)*(2+strlen(buffer)));
@@ -82,18 +71,20 @@ node* loadDB(FILE *DB)
 
     if(strcmp("None\n", buffer)==0)
     {
+        free(buffer);
         return NULL;
     }
     else
     {
         node *nw = newNode(buffer);
+        free(buffer);
         updateHeight(nw);
         balance(nw);
         (*nw).left = loadDB(DB);
         (*nw).right = loadDB(DB);
         return nw;
     }
-    free(buffer);
+
 }
 void saveDB(node* nd, FILE * DB)
 {

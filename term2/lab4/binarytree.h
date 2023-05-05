@@ -17,7 +17,9 @@ void leftRotate(node* root);
 void rightRotate(node* root);
 void swap(node* a, node* b);
 int getBalance(node* root);
-void updateHeight(node* root);
+int updateHeight(node* nd);
+void updateAllHeights(node* nd);
 int getHeight(node* root);
+void freeTree(node* root);
 
 #endif //_BINARYTREE_H_
