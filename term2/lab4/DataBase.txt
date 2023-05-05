@@ -1,19 +1,19 @@
-Is it live?
-it is a friend of human?it is a bird?cat
+friend of human?
+not bird?
+can't fly?
+dog
+None
+None
+kunica
 None
 None
 penguin
 None
 None
-dog
+Is it alive?
+cat
 None
 None
-like a rock?little?stone
-None
-None
-mountain
-None
-None
-bolt
+stone
 None
 None

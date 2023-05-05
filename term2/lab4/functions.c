@@ -92,7 +92,10 @@ void saveDB(node* nd, FILE * DB)
     fprintf(DB,"None\n");
     else
     {
+
         fprintf(DB, (*nd).question);
+        if(strchr((*nd).question,'\n')==NULL)
+            fprintf(DB, "\n");
         saveDB((*nd).left,DB);
         saveDB((*nd).right,DB);
     }
