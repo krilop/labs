@@ -12,6 +12,12 @@ typedef struct Node
 } node;
 
 node *newNode(char *value);
-
+void balance(node* root);
+void leftRotate(node* root);
+void rightRotate(node* root);
+void swap(node* a, node* b);
+int getBalance(node* root);
+void updateHeight(node* root);
+int getHeight(node* root);
 
 #endif //_BINARYTREE_H_

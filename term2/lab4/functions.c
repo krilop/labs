@@ -47,6 +47,9 @@ void ask(node *question)
         fgets(buffer,SIZE_OF_STRING,stdin);
         (*question).left= newNode((*question).question);
         (*question).right= newNode(buffer);
+        updateHeight((*question).left);
+        updateHeight((*question).right);
+        updateHeight(question);
         printf("Special characteristic of my variant?\n");
         fgets(buffer,SIZE_OF_STRING,stdin);
         (*question).question=(char*)realloc((*question).question, sizeof(char)*(2+strlen(buffer)));
@@ -84,6 +87,8 @@ node* loadDB(FILE *DB)
     else
     {
         node *nw = newNode(buffer);
+        updateHeight(nw);
+        balance(nw);
         (*nw).left = loadDB(DB);
         (*nw).right = loadDB(DB);
         return nw;

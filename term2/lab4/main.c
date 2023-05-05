@@ -15,6 +15,8 @@ int main()
     while(restart)
     {
         startGame(root);
+        updateHeight(root);
+        balance(root);
         restart=getAnswer("Do you want to play the game again?");
     }
     DB=fopen("../term2/lab4/DataBase.txt","w");
