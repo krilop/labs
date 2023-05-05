@@ -37,9 +37,8 @@ add_executable(compress term2/lab2/compress.c term2/lab2/functionsForCompressing
 add_executable(decompress term2/lab2/decompress.c term2/lab2/functionsForDecompressing.c term2/lab2/functionsForDecompressing.h term2/lab2/file/book.txt)
 
 add_executable(bmpEditor term2/lab3/main.c term2/lab3/functions.h term2/lab3/functions.c)
-add_executable(acinatorGame term2/lab4/main.c term2/lab4/functions.h term2/lab4/functions.c)
+add_executable(acinatorGame term2/lab4/main.c term2/lab4/functions.h term2/lab4/functions.c term2/lab4/binarytree.c term2/lab4/binarytree.h)
 
 add_executable(test test/main.c test/functions.h test/functions.c )
 
 target_link_libraries(bmpEditor m)
-target_link_libraries(acinatorGame gtk+-3.0)

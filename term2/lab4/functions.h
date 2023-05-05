@@ -7,14 +7,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #include <string.h>
-#include <locale.h>
-#include <gtk-3.0/gtk/gtk.h>
-#include <gtk-3.0/gtk/gtkbutton.h>
-#include <gtk-3.0/gtk/gtklabel.h>
+#include "binarytree.h"
 
 
-
+int getAnswer(char* question);
+void startGame(node* root);
+node* loadDB(FILE *DB);
+void saveDB(node* nd, FILE * DB);
 
 #endif //_FUNCTIONS_H_
