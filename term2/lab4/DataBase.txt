@@ -1,12 +1,16 @@
-friend of human?
 not bird?
 can't fly?
+has 4 legs?
 dog
+None
+None
+Vlad
 None
 None
 kunica
 None
 None
+friend of human?
 penguin
 None
 None
