@@ -36,7 +36,7 @@ int doesListFull(list** listOfData)
     while((*tmp).key!=NULL&&(*tmp).next!=NULL)
     {
         count--;
-        *tmp=*tmp->next;
+        tmp=tmp->next;
     }
     return count==0? 1:0;
 }
@@ -73,7 +73,7 @@ void getNewObj(char* string, list** listOfData, list*** arrayOfPtr)
         //while((*tmp).key!=NULL&&(*tmp).next!=NULL)
           //  *tmp=*tmp->next;
           list* tmp;
-          if((**listOfData).key==NULL)
+          if((*listOfData)==NULL)
               tmp=(*listOfData);
           else
           {
