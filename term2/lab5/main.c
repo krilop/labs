@@ -11,7 +11,7 @@ int main()
         printf("Error of openning DB\n");
         return 1;
     }
-    list* arrayOfData=(list*)calloc(5,sizeof(list));
+    list* arrayOfData=(list*)calloc(1,sizeof(list));
     list** hashtable=(list**)calloc(5, sizeof(list*));
     getTable(&hashtable,&arrayOfData, DB);
     /*
