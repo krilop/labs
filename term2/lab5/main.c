@@ -3,27 +3,28 @@
 //
 #include "functions.h"
 
-int main()
-{
+int main() {
     FILE* DB = fopen("../term2/lab5/DataBase.txt","r");
     if(DB==NULL)
     {
-        printf("Error of openning DB\n");
+        printf("Error of opening DB\n");
         return 1;
     }
-    list* arrayOfData=(list*)calloc(1,sizeof(list));
-    list** hashtable=(list**)calloc(5, sizeof(list*));
-    getTable(&hashtable,&arrayOfData, DB);
-    /*
-     * тезисный план:
-     * 1) чтение домена
-     * 2) занесение его в двусвязный список
-     * 3) создание массива указателей(хеш-таблицы)
-     * 4) пропуск домена через хеш и занесение указателя на элемент в таблицу
-     * 5) делать п.1-4, пока в списке не будет 5 элементов
-     * 6) функция вывода двусвязного списка
-     * 7) функция сдвига по недавнему использованию в двусвязном списке(может, вообще поинтеры свапнуть)
-     * 8) поиск всех доменных имен по ip
-     * 9) возможность добавить запись с проверкой на существование и корректный ввод ip*/
+    menu(DB);
 
+    LRUCache* cache = createLRUCache(3);
+
+    put(cache, "key1", "value1");
+    put(cache, "key2", "value2");
+    put(cache, "key3", "value3");
+
+    printf("%s\n", get(cache, "key1"));  // Вывод: value1
+
+    put(cache, "key4", "value4");
+
+    printf("%s\n", get(cache, "key2"));  // Вывод: (null)
+
+    destroyLRUCache(cache);
+
+    return 0;
 }

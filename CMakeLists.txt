@@ -40,8 +40,9 @@ add_executable(bmpEditor term2/lab3/main.c term2/lab3/functions.h term2/lab3/fun
 
 add_executable(acinatorGame term2/lab4/main.c term2/lab4/functions.h term2/lab4/functions.c term2/lab4/binarytree.c term2/lab4/binarytree.h)
 
-add_executable(hashNcache term2/lab5/main.c term2/lab5/functions.c term2/lab5/functions.h)
+add_executable(hashNcache term2/lab5/main.c term2/lab5/functions.c term2/lab5/functions.h term2/lab5/cache.c term2/lab5/cache.h)
 
 add_executable(test test/main.c test/functions.h test/functions.c )
 
 target_link_libraries(bmpEditor m)
+target_link_libraries(test m)
