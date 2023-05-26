@@ -108,6 +108,36 @@ char *get(LRUCache *cache, const char *key)
 
 void put(LRUCache *cache, const char *key, const char *value)
 {
+    if ((*cache).count == (*cache).capacity)
+    {
+        // Найти последний непустой список
+        int lastNonEmptyListIndex = -1;
+        for (int i = cache->capacity - 1; i >= 0; i--)
+        {
+            if (cache->cache[i].head->next != cache->cache[i].tail)
+            {
+                lastNonEmptyListIndex = i;
+                break;
+            }
+        }
+
+        if (lastNonEmptyListIndex != -1)
+        {
+            // Найти последний узел в последнем непустом списке
+            LinkedList *lastList = &(cache->cache[lastNonEmptyListIndex]);
+            Node *lastNode = lastList->head->next;
+            while (lastNode->next != lastList->tail)
+            {
+                lastNode = lastNode->next;
+            }
+
+            // Удалить последний узел
+            removeFromList(lastList, lastNode);
+            cache->hashmap[hashFunction(lastNode->key, cache->capacity)] = NULL;
+            deleteNode(lastNode);
+            (*cache).count--;
+        }
+    }
     int index = hashFunction(key, cache->capacity);
     LinkedList *list = &(cache->cache[index]);
     Node *node = list->head->next;
@@ -121,20 +151,6 @@ void put(LRUCache *cache, const char *key, const char *value)
             return;
         }
         node = node->next;
-    }
-
-    if ((*cache).count == (*cache).capacity)
-    {
-        int lastListIndex = cache->capacity - 1;
-        LinkedList *lastList = &(cache->cache[lastListIndex]);
-        Node *lastNode = (lastList->tail != NULL) ? lastList->tail->prev : NULL;
-        if (lastNode != NULL)
-        {
-            removeFromList(lastList, lastNode);
-            cache->hashmap[hashFunction(lastNode->key, cache->capacity)] = NULL;
-            deleteNode(lastNode);
-            (*cache).count--;
-        }
     }
 
     Node *newNode = createNode(key, value);
