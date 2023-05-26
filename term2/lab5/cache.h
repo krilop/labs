@@ -38,5 +38,6 @@ LRUCache *createLRUCache(int capacity);
 void updateLRUCache(LRUCache *cache, int index, Node *node);
 char *get(LRUCache *cache, const char *key);
 void put(LRUCache *cache, const char *key, const char *value);
-void destroyLRUCache(LRUCache *cache)
+void destroyLRUCache(LRUCache *cache);
+void printLRUCache(LRUCache *cache);
 #endif //_CACHE_H_

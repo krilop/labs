@@ -12,8 +12,10 @@
 #include <stdio.h>
 #include "cache.h"
 
-int cntBeforeSpace(char* string);
-char* findIp(FILE* in, char* domain);
+void clearInputBuffer();
+char *readLineFromFile(FILE *file);
+char *readLineFromConsole();
+char* findIp(FILE* in, char* domain, LRUCache* cache);
 void menu(FILE* resource);
 
 

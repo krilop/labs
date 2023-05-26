@@ -40,4 +40,6 @@ amyrc.org IN A 103.161.236.0
 2zingery.com IN CNAME zingery.com
 2jc100.org IN CNAME jc100.org
 2lcroskey.com IN CNAME lcroskey.com
+3lcroskey.com IN CNAME lcroskey.com
+65lcroskey.com IN CNAME lcroskey.com
 2amyrc.org IN CNAME amyrc.org

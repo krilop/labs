@@ -7,8 +7,8 @@
 Node *createNode(const char *key, const char *value)
 {
     Node *newNode = (Node *) malloc(sizeof(Node));
-    newNode->key = strdup(key);
-    newNode->value = strdup(value);
+    (*newNode).key = strdup(key);
+    (*newNode).value = strdup(value);
     newNode->prev = NULL;
     newNode->next = NULL;
     return newNode;
@@ -17,25 +17,25 @@ Node *createNode(const char *key, const char *value)
 LinkedList *createLinkedList()
 {
     LinkedList *list = (LinkedList *) malloc(sizeof(LinkedList));
-    list->head = createNode("", "");
-    list->tail = createNode("", "");
-    list->head->next = list->tail;
-    list->tail->prev = list->head;
+    (*list).head = createNode("", "");
+    (*list).tail = createNode("", "");
+    (*(list->head)).next = list->tail;
+    (*(list->tail)).prev = list->head;
     return list;
 }
 
 void addToFront(LinkedList *list, Node *node)
 {
-    node->next = list->head->next;
-    node->prev = list->head;
-    list->head->next->prev = node;
-    list->head->next = node;
+    (*node).next = list->head->next;
+    (*node).prev = list->head;
+    (*(list->head->next)).prev = node;
+    (*(list->head)).next = node;
 }
 
 void removeFromList(LinkedList *list, Node *node)
 {
-    node->prev->next = node->next;
-    node->next->prev = node->prev;
+    (*(node->prev)).next = node->next;
+    (*(node->next)).prev = node->prev;
 }
 
 void deleteNode(Node *node)
@@ -47,24 +47,27 @@ void deleteNode(Node *node)
 
 int hashFunction(const char *key, int capacity)
 {
-    int hash=0;
-    char c;
-    while ((c = *key++))
-        hash = hash + c;
+    int hash = 0;
+    int i=0;
+    while ( key[i]!=NULL)
+    {
+        hash = hash + key[i];
+        i++;
+    }
     return hash % capacity;
 }
 
 LRUCache *createLRUCache(int capacity)
 {
     LRUCache *cache = (LRUCache *) malloc(sizeof(LRUCache));
-    cache->capacity = capacity;
-    cache->count = 0;
-    cache->cache = (LinkedList *) malloc(sizeof(LinkedList) * capacity);
-    cache->hashmap = (Node **) malloc(sizeof(Node *) * capacity);
+    (*cache).capacity = capacity;
+    (*cache).count = 0;
+    (*cache).cache = (LinkedList *) malloc(sizeof(LinkedList) * capacity);
+    (*cache).hashmap = (Node **) malloc(sizeof(Node *) * capacity);
     for (int i = 0; i < capacity; i++)
     {
-        cache->cache[i] = *createLinkedList();
-        cache->hashmap[i] = NULL;
+        (*cache).cache[i] = *createLinkedList();
+        (*cache).hashmap[i] = NULL;
     }
     return cache;
 }
@@ -75,22 +78,28 @@ void updateLRUCache(LRUCache *cache, int index, Node *node)
     removeFromList(list, node);
     addToFront(list, node);
 
+    // Обновляем указатель на список в хеш-таблице
+    (*cache).hashmap[index] = list;
+
     // Обновляем порядок использования элемента в общем списке кеша
-    removeFromList(cache->cache, node);
-    addToFront(cache->cache, node);
+    removeFromList((*cache).cache, node);
+    addToFront((*cache).cache, node);
 }
 
 char *get(LRUCache *cache, const char *key)
 {
     int index = hashFunction(key, cache->capacity);
-    LinkedList *list = &(cache->cache[index]);
+    LinkedList* list = &((*cache).cache[index]);
     Node *node = list->head->next;
     while (node != list->tail)
     {
         if (strcmp(node->key, key) == 0)
         {
-            updateLRUCache(cache, index, node);
-            return node->value;
+            removeFromList(list, node);
+            addToFront(list, node);
+            removeFromList((*cache).cache, node);
+            addToFront((*cache).cache, node);
+            return (*node).value;
         }
         node = node->next;
     }
@@ -113,26 +122,33 @@ void put(LRUCache *cache, const char *key, const char *value)
         }
         node = node->next;
     }
-    if (cache->count == cache->capacity)
+
+    if ((*cache).count == (*cache).capacity)
     {
-        int evictIndex = hashFunction(cache->cache->tail->prev->key, cache->capacity);
-        Node *evictNode = cache->cache[evictIndex].tail->prev;
-        removeFromList(&(cache->cache[evictIndex]), evictNode);
-        cache->hashmap[evictIndex] = NULL;
-        deleteNode(evictNode);
-        cache->count--;
+        int lastListIndex = cache->capacity - 1;
+        LinkedList *lastList = &(cache->cache[lastListIndex]);
+        Node *lastNode = (lastList->tail != NULL) ? lastList->tail->prev : NULL;
+        if (lastNode != NULL)
+        {
+            removeFromList(lastList, lastNode);
+            cache->hashmap[hashFunction(lastNode->key, cache->capacity)] = NULL;
+            deleteNode(lastNode);
+            (*cache).count--;
+        }
     }
+
     Node *newNode = createNode(key, value);
     addToFront(list, newNode);
     cache->hashmap[index] = newNode;
-    cache->count++;
+    (*cache).count++;
 }
+
 
 void destroyLRUCache(LRUCache *cache)
 {
-    for (int i = 0; i < cache->capacity; i++)
+    for (int i = 0; i < (*cache).capacity; i++)
     {
-        LinkedList *list = &(cache->cache[i]);
+        LinkedList *list = &((*cache).cache[i]);
         Node *node = list->head->next;
         while (node != list->tail)
         {
@@ -147,5 +163,51 @@ void destroyLRUCache(LRUCache *cache)
     free(cache->hashmap);
     free(cache);
 }
+
+void printLRUCache(LRUCache* cache) {
+    int maxKeyLength = 0;
+    int maxValueLength = 0;
+    int maxHashLength = 0;
+
+    for (int i = 0; i < (*cache).capacity; i++) {
+        LinkedList* list = &((*cache).cache[i]);
+        Node* node = list->head->next;
+        while (node != list->tail) {
+            int keyLength = strlen(node->key);
+            int valueLength = strlen(node->value);
+            int hashLength = snprintf(NULL, 0, "%d", i) + 1;  // +1 для учета нулевого символа
+            if (keyLength > maxKeyLength) {
+                maxKeyLength = keyLength;
+            }
+            if (valueLength > maxValueLength) {
+                maxValueLength = valueLength;
+            }
+            if (hashLength > maxHashLength) {
+                maxHashLength = hashLength;
+            }
+            node = node->next;
+        }
+    }
+
+
+    printf("+----+-%-*s-+-%-*s-+-%-*s-+\n", maxHashLength, "Hash", maxKeyLength, "Key", maxValueLength, "Value");
+    printf("| No.| %-*s | %-*s | %-*s |\n", maxHashLength, "Hash", maxKeyLength, "Key", maxValueLength, "Value");
+    printf("+----+-%-*s-+-%-*s-+-%-*s-+\n", maxHashLength, "----", maxKeyLength, "---------", maxValueLength, "---------");
+
+    for (int i = 0; i < (*cache).capacity; i++) {
+        LinkedList* list = &((*cache).cache[i]);
+        Node* node = list->head->next;
+        int entryNumber = 1;
+        while (node != list->tail) {
+            printf("| %-3d| %-*d | %-*s | %-*s |\n", entryNumber, maxHashLength, hashFunction(node->key,cache->capacity), maxKeyLength, node->key, maxValueLength, node->value);
+            node = node->next;
+            entryNumber++;
+        }
+    }
+
+    printf("+----+-%-*s-+-%-*s-+-%-*s-+\n", maxHashLength, "----", maxKeyLength, "---------", maxValueLength, "---------");
+}
+
+
 
 
