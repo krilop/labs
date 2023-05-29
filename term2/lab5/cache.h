@@ -8,36 +8,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "functions.h"
 typedef struct Node {
-    char *key;
-    char *value;
-    struct Node *prev;
-    struct Node *next;
+
+    char* key;
+    char* value;
+
+    struct Node* next;
+    struct Node* prev;
+    struct Node* collision;
+
 } Node;
 
-typedef struct LinkedList {
-    Node *head;
-    Node *tail;
-} LinkedList;
+typedef struct Hash_Table {
 
-typedef struct LRUCache {
     int capacity;
-    int count;
-    LinkedList *cache;
-    Node **hashmap;
-} LRUCache;
+    Node** values;
 
-Node *createNode(const char *key, const char *value);
-LinkedList *createLinkedList();
-void addToFront(LinkedList *list, Node *node);
-void removeFromList(LinkedList *list, Node *node);
-void deleteNode(Node *node);
+} HashTable;
+
+typedef struct List {
+
+    int size;
+    int capacity;
+
+    Node* head;
+    Node* tail;
+
+} List;
+
+typedef struct Cache {
+
+    HashTable* hashtable;
+    List* list;
+
+} Cache;
+
 int hashFunction(const char *key, int capacity);
-LRUCache *createLRUCache(int capacity);
-void updateLRUCache(LRUCache *cache, int index, Node *node);
-char *get(LRUCache *cache, const char *key);
-void put(LRUCache *cache, const char *key, const char *value);
-void destroyLRUCache(LRUCache *cache);
-void printLRUCache(LRUCache *cache);
+Node* createNode(char* key, char* value);
+List* createList(int capacity);
+HashTable* createHashTable(int size);
+Cache* createCache(int size);
+char* get(Cache *cache, char* key);
+void findInFile(Cache* cache, char* string, file in);
 #endif //_CACHE_H_

@@ -63,7 +63,7 @@ char *readLineFromConsole()
     return buffer;
 }
 
-char *readLineFromFile(FILE *file)
+char *readLineFromFile(file in)
 {
     char *buffer = NULL;
     int bufsize = 0;
@@ -78,7 +78,7 @@ char *readLineFromFile(FILE *file)
     }
 
     // Чтение строки из файла
-    characters = fgetc(file);
+    characters = fgetc(in.file);
     int i = 0;
     while (characters != EOF && characters != '\n' && characters != '\r')
     {
@@ -94,7 +94,7 @@ char *readLineFromFile(FILE *file)
         }
         buffer[i] = (char) characters;
         i++;
-        characters = fgetc(file);
+        characters = fgetc(in.file);
     }
     buffer[i] = '\0';
 
@@ -112,11 +112,40 @@ char *readLineFromFile(FILE *file)
     return buffer;
 }
 
-
-void addToFile(FILE *out, char *string)
+int checkIp(char *ip)
 {
-    fseek(out, 0, SEEK_END);
-    fprintf(out, "%s IN ", string);
+    int n=0;
+    int j=0;
+    while(j<strlen(ip))
+    {
+        if(ip[j]=='.')
+            n++;
+        j++;
+    }
+    if(n!=3)
+        return 1;
+    j=0;
+    n=0;
+    for (int i = 0; i < 4&&j< (int)strlen(ip); i++)
+    {
+
+        n=0;
+        while(ip[j]!='.'&&ip[j]!='\0')
+        {
+            n = 10 * n + ip[j] - '0';
+            j++;
+        }
+        if(n<0||n>255)
+            return 1;
+    }
+    return 0;
+}
+
+void addToFile(file out, char *string)
+{
+    freopen(out.fileName,"a+",out.file);
+    fseek(out.file, 0, SEEK_END);
+    fprintf(out.file, "%s IN ", string);
     int choice;
     printf("CNAME or A(1/0)\n");
     while (1)
@@ -127,95 +156,64 @@ void addToFile(FILE *out, char *string)
             clearInputBuffer();
         }
         else
-        {
             break;
-        }
     }
+
     if (choice)
     {
-        char *buffer = (char *) calloc(STRING, sizeof(char));
-        fgets(buffer, STRING, stdin);
-        buffer[strlen(buffer) - 1] = '\0';
-        fprintf(out, "CNAME %s\n", buffer);
+        printf("Please, entry main domain name\n");
+        char *buffer = readLineFromConsole();
+        fprintf(out.file, "CNAME %s\n", buffer);
+        fprintf(out.file, "%s IN ", buffer);
+        free(buffer);
+        printf("Please, entry the ip of those domains\n");
+        char* ip;
+        while(1)
+        {
+            ip=readLineFromConsole();
+            if(!checkIp(ip))
+            {
+                fprintf(out.file, "A %s\n", ip);
+                break;
+            }
+            free(ip);
+        }
+        free(ip);
     }
     else
     {
-        char *buffer = (char *) calloc(STRING, sizeof(char));
-        fgets(buffer, STRING, stdin);
-        buffer[strlen(buffer) - 1] = '\0';
-        fprintf(out, "A %s\n", buffer);
+        printf("Please, entry the ip of this domain\n");
+        char* buffer=readLineFromConsole();
+        fprintf(out.file, "A %s\n", buffer);
     }
+    freopen(out.fileName,"r",out.file);
 }
 
-void findDomain(FILE *in, char *ip)
+
+void findDomain(file in, char *ip)
 {
-    char *buffer;
-    fseek(in, 0, SEEK_SET);
-    while ((buffer = readLineFromFile(in)) != NULL)
+
+}
+
+
+char *findIp(file in, char *domain, Cache* cache)
+{
+    char* answer = get(cache,domain);
+    if(!answer)
     {
-        if (strstr(buffer, ip) != NULL)
-        {
-            char *result = (char *)malloc((strcspn(buffer, " ") + 1) * sizeof(char));  // Выделяем память для результата
-            strncpy(result, buffer, strcspn(ip, " "));  // Копируем строку до пробела
-            result[strcspn(buffer, " ")] = '\0';
-            int i=1;
-            printf("%d.%s\n",i,result);
-            fseek(in,0,SEEK_SET);
-            while ((buffer = readLineFromFile(in)) != NULL&&!feof(in))
-            {
-                if (strstr(buffer, result) != NULL&&strstr(buffer, ip) == NULL)
-                {
-                    i++;
-                    printf("%d.%.*s\n",i,strcspn(buffer, " "),buffer);
-                }
-            }
-            return;
-        }
+        findInFile(cache, domain, in);
+        answer=get(cache,domain);
     }
-    printf("I don't know this ip.\n");
+    if(!answer) return NULL;
+    if(!checkIp(answer))return answer;
+    else findIp(in,answer,cache);
+    return answer;
 }
 
-
-char *findIp(FILE *in, char *domain, LRUCache *cache)
+void menu(file resource)
 {
-    char *buffer;
-    fseek(in, 0, SEEK_SET);
-    while ((buffer = readLineFromFile(in)) != NULL)
-    {
-        if (strstr(buffer, domain) != NULL)
-        {
-            char *tmp = strdup(strrchr(buffer, ' ') + 1);
+    Cache *cache = createCache(HASH_TABLE_SIZE);
 
-            if (strstr(buffer, INA) != NULL)
-            {
-                char *existingValue = get(cache, domain);
-                if (existingValue != NULL)
-                {
-                    free(tmp);  // Освобождаем память, выделенную для нового значения
-                    tmp = strdup(existingValue);  // Создаем копию существующего значения
-                }
-                else
-                {
-                    put(cache, domain, tmp);  // Добавляем новое значение в кеш
-                }
-                return tmp;
-            }
-            else
-            {
-                return findIp(in, tmp, cache);
-            }
-        }
-    }
-    addToFile(in, domain);
-    return NULL;
-}
-
-
-void menu(FILE *resource)
-{
-    LRUCache *cache = createLRUCache(HASH_TABLE_SIZE);
-
-    // Вывод: (null)
     while (1)
     {
         int operation;
@@ -228,9 +226,7 @@ void menu(FILE *resource)
                 clearInputBuffer();
             }
             else
-            {
                 break;
-            }
         }
         switch (operation)
         {
@@ -238,24 +234,31 @@ void menu(FILE *resource)
             {
                 printf("Input domain name:\n");
                 char *buffer = readLineFromConsole();
-                char *tmp = get(cache, buffer);
-                if (tmp == NULL)
-                {
-                    tmp = findIp(resource, buffer, cache);
-                }
-                printf("Domain: %s\tIp: %s\n", buffer, tmp);
+                char* answ=findIp(resource,buffer,cache);
+                if(answ==NULL)
+                    printf("I don't know this domain\n");
+                else
+                    printf("Ip:%s\n",findIp(resource,buffer,cache));
                 break;
             }
             case 2:
             {
-                printf("Input ip:\n");
-                char *buffer = readLineFromConsole();
-                findDomain(resource,buffer);
+
+                char *buffer;
+                while(1)
+                {
+                    printf("Input ip:\n");
+                     buffer = readLineFromConsole();
+                     if(checkIp(buffer))
+                         continue;
+                     break;
+                }
+                printf("Ip:%s\n",findDomain(resource,buffer));
                 break;
             }
             case 3:
             {
-                printLRUCache(cache);
+                printCache(cache);
                 break;
             }
             case 4:
@@ -269,138 +272,5 @@ void menu(FILE *resource)
                 return;
         }
     }
-    destroyLRUCache(cache);
+    destroyCache(cache);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-int doesListFull(list** listOfData)
-{
-    int count =HASH_TABLE_SIZE;
-    list* tmp=(*listOfData);
-    while((*tmp).key!=NULL&&(*tmp).next!=NULL)
-    {
-        count--;
-        tmp=tmp->next;
-    }
-    return count==0? 1:0;
-}
-
-void changeLastObj(list** listOfData, char* string, list*** arrayOfPtr)
-{
-    int count =HASH_TABLE_SIZE;
-    list* tmp=(*listOfData);
-    while(count!=1||(*tmp).next!=NULL)
-    {
-        count--;
-        *tmp=*tmp->next;
-    }
-    int beforeSpace=cntBeforeSpace(string);
-    (*tmp).key=realloc((*tmp).key,sizeof(char)*beforeSpace);
-    (*tmp).key= strncpy((*tmp).key,string,beforeSpace);
-    (*tmp).key[beforeSpace-1]='\0';
-    char* ip=strrchr(string, ' ');
-    (*tmp).value=realloc((*tmp).value, sizeof(char)*(strlen(ip)+1));
-    (*tmp).value= strncpy((*tmp).value,ip,(strlen(ip)+1));
-    (*tmp).value[strlen(ip)]='\0';
-    free(ip);
-    (*arrayOfPtr)[hash(string)]=tmp;
-}
-void getNewObj(char* string, list** listOfData, list*** arrayOfPtr)
-{
-    if(doesListFull(listOfData))
-    {
-        changeLastObj(listOfData,string, arrayOfPtr);
-    }
-    else
-    {
-
-        //while((*tmp).key!=NULL&&(*tmp).next!=NULL)
-          //  *tmp=*tmp->next;
-          list* tmp;
-          if((*listOfData)==NULL)
-              tmp=(*listOfData);
-          else
-          {
-              tmp = (list *) malloc(sizeof(list));
-              list *toFindSpace = (*listOfData);
-              int cnt=0;
-              while((*toFindSpace).next!=NULL&&cnt!=(HASH_TABLE_SIZE-1))
-              {
-                  toFindSpace=(*toFindSpace).next;
-                  cnt++;
-              }
-              (*toFindSpace).next=tmp;
-              (*tmp).prev=toFindSpace;
-          }
-        int beforeSpace=cntBeforeSpace(string);
-        (*tmp).key=(char*)malloc(sizeof(char)*beforeSpace);
-        (*tmp).key= strncpy((*tmp).key,string,beforeSpace);
-        (*tmp).key[beforeSpace-1]='\0';
-        char* ip=strrchr(string, ' ');
-        (*tmp).value=(char*)malloc( sizeof(char)*(strlen(ip)+1));
-        (*tmp).value= strncpy((*tmp).value,ip,(strlen(ip)+1));
-        (*tmp).value[strlen(ip)]='\0';
-        (*arrayOfPtr)[hash(string)]=tmp;
-    }
-}
-void getTable(list*** arrayOfPtr, list** listOfData, FILE* DB)
-{
-    char* buffer= (char*)calloc(STRING+1, sizeof(char));
-    int countOfSize=0;
-    while(!feof(DB)&&(countOfSize!=HASH_TABLE_SIZE))
-    {
-        fgets(buffer, STRING, DB);
-        buffer[strlen(buffer)] = '\0';//Стр лен -1 Чтобы не было \н
-        int checkHash=hash(buffer);
-        if (strstr(buffer, "IN A") != NULL&&checkHash==countOfSize)
-        {
-            countOfSize++;
-            getNewObj(buffer, listOfData,arrayOfPtr);
-            fseek(DB,0, SEEK_SET);
-        }
-    }
-
-}
-*/

@@ -43,3 +43,5 @@ amyrc.org IN A 103.161.236.0
 3lcroskey.com IN CNAME lcroskey.com
 65lcroskey.com IN CNAME lcroskey.com
 2amyrc.org IN CNAME amyrc.org
+vladthebest.by IN CNAME vladthegod.uni
+vladthegod.uni IN A 7.7.7.7
