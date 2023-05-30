@@ -10,10 +10,10 @@ int main() {
         printf("Error of opening DB\n");
         return 1;
     }
-    file in;
-    in.file=DB;
-    in.fileName="../term2/lab5/DataBase.txt";
-    menu(in);
-    fclose(in.file);
+
+
+    char* fileName="../term2/lab5/DataBase.txt";
+    menu(DB, fileName);
+    fclose(DB);
     return 0;
 }

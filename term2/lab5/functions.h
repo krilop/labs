@@ -11,15 +11,10 @@
 #include <string.h>
 #include <stdio.h>
 #include "cache.h"
-typedef struct  file{
-    FILE * file;
-    char* fileName;
-} file;
 void clearInputBuffer();
-char *readLineFromFile(file file);
+char *readLineFromFile(FILE* file);
 char *readLineFromConsole();
-char* findIp(file in, char* domain, Cache* cache);
-void menu(file in);
+void menu(FILE* in, char* name);
 
 
 #endif //_FUNCTIONS_H_

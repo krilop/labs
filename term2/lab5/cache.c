@@ -3,12 +3,13 @@
 //
 
 #include "cache.h"
+#include "functions.h"
 
 int hashFunction(const char *key, int capacity)
 {
     int hash = 0;
-    int i=0;
-    while ( key[i]!=NULL)
+    int i = 0;
+    while (key[i] != NULL)
     {
         hash = hash + key[i];
         i++;
@@ -16,9 +17,10 @@ int hashFunction(const char *key, int capacity)
     return hash % capacity;
 }
 
-Node* createNode(char* key, char* value) {
+Node *createNode(char *key, char *value)
+{
 
-    Node* node = (Node*)malloc(sizeof(Node));
+    Node *node = (Node *) malloc(sizeof(Node));
 
     node->key = key;
     node->value = value;
@@ -30,56 +32,76 @@ Node* createNode(char* key, char* value) {
 
 }
 
-List* createList(int capacity) {
-
-    List* list = (List*)malloc(sizeof(List));
-
+List *createList(int capacity)
+{
+    List *list = (List *) malloc(sizeof(List));
     list->size = 0;
     list->capacity = capacity;
     list->head = list->tail = NULL;
-
     return list;
-
 }
 
-HashTable* createHashTable(int size) {
-
-    HashTable* hashTable = (HashTable*)malloc(sizeof(HashTable));
-
+HashTable *createHashTable(int size)
+{
+    HashTable *hashTable = (HashTable *) malloc(sizeof(HashTable));
     hashTable->capacity = size;
-    hashTable->values = (Node**)malloc(sizeof(Node) * size);
-
+    hashTable->values = (Node **) malloc(sizeof(Node) * size);
     for (int i = 0; i < size; i++) hashTable->values[i] = NULL;
-
     return hashTable;
-
 }
 
-Cache* createCache(int size) {
-
-    Cache* cache = (Cache*)malloc(sizeof(Cache));
-    HashTable* hashTable = createHashTable(size * 2);
-    List* list = createList(size);
-
+Cache *createCache(int size)
+{
+    Cache *cache = (Cache *) malloc(sizeof(Cache));
+    HashTable *hashTable = createHashTable(size * 2);
+    List *list = createList(size);
     cache->hashtable = hashTable;
     cache->list = list;
-
     return cache;
-
 }
 
-void cacheShift(Cache* cache, char* key) {
 
-    List* list = cache->list;
+void removeOldest(Cache *cache) {
+
+    HashTable *table = cache->hashtable;
+    List *list = cache->list;
+
+    Node *entry = list->head;
+
+    if (list->head == NULL)
+        return;
+
+    if (list->head == list->tail) {
+        list->head = NULL;
+        list->tail = NULL;
+    } else {
+        list->head = entry->next;
+        list->size = list->size - 1;
+        list->head->prev = NULL;
+    }
+
+    Node **node = &table->values[hashFunction(entry->key,table->capacity)];
+    while ((*node) != entry)
+        node = &(*node)->next;
+    *node = entry->next;
+
+    free(entry);
+}
+
+
+void cacheShift(Cache *cache, char *key)
+{
+    List *list = cache->list;
     if (list->size == 1) return;
-    Node* curr = cache->hashtable->values[hashFunction(key,HASH_TABLE_SIZE)];
-    while (curr) {
-
+    Node *curr = cache->hashtable->values[hashFunction(key, HASH_TABLE_SIZE)];
+    while (curr)
+    {
         if (strcmp(curr->key, key) == 0) break;
         curr = curr->collision;
     }
     if (curr == NULL) return;
-    if (curr->prev == NULL) {
+    if (curr->prev == NULL)
+    {
         curr->prev = list->tail;
         list->head = curr->next;
         list->head->prev = NULL;
@@ -98,42 +120,148 @@ void cacheShift(Cache* cache, char* key) {
 
 }
 
-char* get(Cache* cache, char* key)
+char *get(Cache *cache, char *key)
 {
-    Node* needle=cache->hashtable->values[hashFunction(key,HASH_TABLE_SIZE)];
+    Node *needle = cache->hashtable->values[hashFunction(key, HASH_TABLE_SIZE)];
 
-    while(needle)
+    while (needle)
     {
-        if(strcmp(needle->key, key)==0)
+        if (strcmp(needle->key, key) == 0)
         {
-            cacheShift(cache,key);
-            return needle->key;
+            cacheShift(cache, key);
+            return needle->value;
         }
-        needle=needle->collision;
+        needle = needle->collision;
     }
     return NULL;
 }
 
-void findInFile(Cache* cache, char* string, file in)
+void printCache(Cache *cache)
 {
-    char*buffer;
-    char* answer;
-    fseek(in.file,0,SEEK_SET);
-    while((buffer=readLineFromFile(in))!=NULL)
+    Node *temp = cache->list->head;
+
+    for (int i = cache->list->size - 1; i >= 0; i--)
     {
-        if(strstr(string,buffer)!=NULL)
+        printf("[%d] %s %s \n", i + 1, temp->key, temp->value);
+        temp = temp->next;
+
+    }
+
+}
+
+void cacheCorrection(Cache* cache) {
+
+    HashTable* table = cache->hashtable;
+    List* list = cache->list;
+    Node* entry = list->head;
+    if (list->head == NULL) return;
+    if (list->head == list->tail) {
+        list->head = NULL;
+        list->tail = NULL;
+    }
+    else {
+        list->head = entry->next;
+        list->size = list->size - 1;
+        list->head->prev = NULL;
+    }
+    Node** node = &table->values[hashFunction(entry->key, table->capacity)];
+    while ((*node) != entry) node = &(*node)->next;
+    *node = entry->next;
+    free(entry);
+}
+void addToList(Cache *cache, Node *node) {
+
+    List *list = cache->list;
+
+    if (list->size == list->capacity) cacheCorrection(cache);
+
+    if (list->head == NULL) {
+        list->head = list->tail = node;
+        list->size = 1;
+        return;
+    }
+
+    node->prev = list->tail;
+    list->tail->next = node;
+    list->tail = node;
+    list->size = list->size + 1;
+}
+
+int addToTable(HashTable *table, Node *node) {
+
+    if (table->values[hashFunction(node->key,table->capacity)] != NULL) {
+
+        Node *curr = table->values[hashFunction(node->key,table->capacity)];
+
+        while (curr->collision != NULL) {
+            if (strcmp(curr->key, node->key) == 0) {
+                curr->value = node->value;
+                return 1;
+            }
+            curr = curr->collision;
+        }
+
+        if (strcmp(curr->key, node->key) == 0) {
+            curr->value = node->value;
+            return 1;
+        }
+
+        curr->collision = node;
+        return 0;
+    } else {
+        table->values[hashFunction(node->key,table->capacity)] = node;
+        return 0;
+    }
+}
+
+void put(Cache *cache, char *key, char *value)
+{
+    Node *node = createNode(key, value);
+    if (addToTable(cache->hashtable, node))
+        cacheShift(cache, node->key);
+    else
+        addToList(cache, node);
+}
+
+void findInFile(Cache *cache, char *string, FILE *in)
+{
+    char *buffer;
+    fseek(in, 0, SEEK_SET);
+    while (!feof(in))
+    {
+        buffer = readLineFromFile(in);
+        if (strstr(buffer, string) != NULL)
         {
-            if(strstr(INA,buffer)!=NULL&&strstr(string,buffer)==buffer)
+            if (strstr(buffer, INA) != NULL)
             {
-                put(cache,strdup(strchr(buffer,' ')));
+                put(cache,strdup(string),strdup(strrchr(buffer,' ')+1));
                 return;
             }
-            if(strstr("IN CNAME",buffer)!=NULL&&strstr(string,buffer)==buffer)
+            if (strstr(buffer, "IN CNAME") != NULL&&strcmp(strrchr(buffer,' ')+1,string)!=0)
             {
-                findInFile(cache,strchr(buffer,' '),in);
+                findInFile(cache, strrchr(buffer, ' ')+1, in);
                 return;
             }
         }
+        free(buffer);
     }
     return;
+}
+
+void destroyCache(Cache *cache)
+{
+    HashTable *table = cache->hashtable;
+    List *list = cache->list;
+    Node *tmp = list->head;
+    while (tmp)
+    {
+        Node *next = tmp->next;
+        free(tmp->key);
+        free(tmp->value);
+        free(tmp);
+        tmp = next;
+    }
+    free(table->values);
+    free(table);
+    free(list);
 }

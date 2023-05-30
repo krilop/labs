@@ -20,14 +20,14 @@ typedef struct Node {
 
 } Node;
 
-typedef struct Hash_Table {
+typedef struct HashTable {
 
     int capacity;
     Node** values;
 
 } HashTable;
 
-typedef struct List {
+typedef struct {
 
     int size;
     int capacity;
@@ -37,12 +37,13 @@ typedef struct List {
 
 } List;
 
-typedef struct Cache {
+typedef struct {
 
     HashTable* hashtable;
     List* list;
 
 } Cache;
+
 
 int hashFunction(const char *key, int capacity);
 Node* createNode(char* key, char* value);
@@ -50,5 +51,7 @@ List* createList(int capacity);
 HashTable* createHashTable(int size);
 Cache* createCache(int size);
 char* get(Cache *cache, char* key);
-void findInFile(Cache* cache, char* string, file in);
+void printCache(Cache* cache);
+void findInFile(Cache* cache, char* string, FILE* in);
+void destroyCache(Cache* cache);
 #endif //_CACHE_H_
