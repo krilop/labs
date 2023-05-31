@@ -127,8 +127,6 @@ void printArrayOfStruct(t **array, int size)
     }
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 //В стадии разработки
 void initializateObjectOfStruct(t **array, int *sizeOfArray)
@@ -169,7 +167,6 @@ void initializateObjectOfStruct(t **array, int *sizeOfArray)
     // free(str);
 }
 
-#pragma clang diagnostic pop
 
 void deleteObjectOfStruct(t **array, int *sizeOfArray)
 {
