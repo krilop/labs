@@ -72,7 +72,7 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
     words tmp1,tmp2;
     tmp1.word =(char*)malloc(sizeof(char));
     tmp2.word =(char*)malloc(sizeof(char));
-    (*newArr) = (pairs *) malloc(sizeof(pair));
+    (*newArr) = (pairs *) malloc(sizeof(pairs));
     do
     {
         max = 0;

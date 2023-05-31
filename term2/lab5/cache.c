@@ -9,7 +9,7 @@ int hashFunction(const char *key, int capacity)
 {
     int hash = 0;
     int i = 0;
-    while (key[i] != NULL)
+    while (key[i] != '\0')
     {
         hash = hash + key[i];
         i++;
