@@ -123,7 +123,7 @@ void createArrayOfStruct(t **array, int *sizeOfArray)
 void printArrayOfStruct(t **array, int size)
 {
     for (int i = 0; i < size; i++) {
-        printf("Index:%d\n Number of player:%d,\n Name:%s,\n Position:%s\n\n", i, (*array)[i].num, (*array)[i].name, pos[(*array)[i].pos]);
+        printf("Index:%d\n Number of player:%d,\n Name:%s,\n Position:%s\n\n", i, (*array)[i].num, (*array)[i].name, posOfPlayers[(*array)[i].pos]);
     }
 }
 
@@ -151,17 +151,17 @@ void initializateObjectOfStruct(t **array, int *sizeOfArray)
     printf("Enter position(CENTER/FORWARD/GUARD):\n");
     while (1) {
         str = getStr();
-        if (!strcmp(str, pos[0]) || !strcmp(str, pos[1]) || !strcmp(str, pos[2])) {
+        if (!strcmp(str, posOfPlayers[0]) || !strcmp(str, posOfPlayers[1]) || !strcmp(str, posOfPlayers[2])) {
             break;
         }
         printf("Error! try again\n");
         rewind(stdin);
     }
-    if (!strcmp(str, pos[0]))
+    if (!strcmp(str, posOfPlayers[0]))
         (*array)[*sizeOfArray - 1].pos = CENTER;
-    else if (!strcmp(str, pos[1]))
+    else if (!strcmp(str, posOfPlayers[1]))
         (*array)[*sizeOfArray - 1].pos = FORWARD;
-    else if (!strcmp(str, pos[2]))
+    else if (!strcmp(str, posOfPlayers[2]))
         (*array)[*sizeOfArray - 1].pos = GUARD;
     else
         (*array)[*sizeOfArray - 1].pos = NONE;

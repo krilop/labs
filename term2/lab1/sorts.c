@@ -3,7 +3,6 @@
 //
 // попробуем сделать через компаратор.
 #include "sorts.h"
-
 void sortStart(t *array, int sizeOfArray)
 {
     printf("Hello! I'm master of sorting. Please, select criteria of sort:\n0.Return\n1.Number of player\n 2.Name\n3.Position\n");

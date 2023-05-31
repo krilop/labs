@@ -3,7 +3,7 @@
 int main(void)
 {
     setlocale(LC_ALL, "Rus");
-    char name[]={"/home/krilop/Документы/university/foaap/labs/term2/lab1/basket.txt"};
+    char name[]={"/home/krilop/Документы/university/foaap/firstcourcelabs/term2/lab1/basket.txt"};
     FILE *in;
     if ((in = fopen(name, "r")) == NULL)
     {
