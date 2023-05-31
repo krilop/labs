@@ -54,7 +54,7 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
                 (*array)[i].num = num;
                 if((*array)[i].num==24)
                 {
-                    fgets(buffer, 255, f) != NULL;
+                    //fgets(buffer, 255, f) != NULL;
                     if (!strstr(buffer, "class=\"mw-redirect\" title=\""))
                     {
                         (*array)[i].name = (char *) malloc(strlen("Бобби Джонс") * sizeof(char));
