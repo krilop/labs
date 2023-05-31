@@ -28,9 +28,7 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
     char *buffer2;
     char *endStr;
     buffer = (char *) calloc(255, 1);
-    buffer2 = (char *) calloc(255, 1);
-    endStr = (char *) calloc(255, 1);
-    while (fgets(buffer, 255, f) != NULL) {
+     while (fgets(buffer, 255, f) != NULL) {
         if ((strstr(buffer, "class=\"mw-redirect\" title=\"NBA\"")) != NULL) {
             while (strstr(buffer, "div id") == NULL)
                 fgets(buffer, 255, f);
@@ -178,7 +176,8 @@ void deleteObjectOfStruct(t **array, int *sizeOfArray)
     }
     if (n == -1)
         return;
-    free((*array + n)->name);
+    if((*(array[n-1])).name!=NULL)
+        free((*(array[n-1])).name);
     for (int i = n; i <= *sizeOfArray - 1; i++)
         array[i] = array[i + 1];
     *sizeOfArray = *sizeOfArray - 1;
@@ -209,11 +208,9 @@ void menu(t **array, int *sizeOfArr)
                 break;
             case 5:
                 return;
-                break;
             default:
                 printf("critical error of menu\n");
                 exit(1);
-                break;
         }
     }
 }
