@@ -42,19 +42,4 @@ add_executable(acinatorGame term2/lab4/main.c term2/lab4/functions.h term2/lab4/
 
 add_executable(hashNcache term2/lab5/main.c term2/lab5/functions.c term2/lab5/functions.h term2/lab5/cache.c term2/lab5/cache.h)
 
-# Поиск пакета GTK+
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK REQUIRED gtk+-3.0)
-
-# Установка директив компилятора и пути для заголовочных файлов GTK+
-include_directories(${GTK_INCLUDE_DIRS})
-link_directories(${GTK_LIBRARY_DIRS})
-add_definitions(${GTK_CFLAGS_OTHER})
-
-add_executable(test test/main.c  )
-
-
-# Связывание исполняемого файла с библиотеками GTK+
-target_link_libraries(test ${GTK_LIBRARIES})
 target_link_libraries(bmpEditor m)
-target_link_libraries(test m)
