@@ -108,8 +108,8 @@ void parsing(t **array, FILE *f, int *sizeOfArray)
         }
     }
     free(buffer);
-    free(buffer2);
-    free(endStr);
+   buffer2=NULL;
+   endStr=NULL;
     *sizeOfArray -= 1;
     *array = (t *) realloc(*array, sizeof(t) * (*sizeOfArray));
 }
