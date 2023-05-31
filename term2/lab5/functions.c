@@ -4,6 +4,24 @@
 
 #include "functions.h"
 
+
+int checkInFile(char *name, char *buffer)
+{
+    FILE *in = fopen(name, "r");
+    fseek(in, 0, SEEK_SET);
+    char *text;
+    while (!feof(in))
+    {
+        text = readLineFromFile(in);
+        if (strstr(text, buffer) != NULL)
+        {
+            return 0;
+        }
+        free(text);
+    }
+    return 1;
+}
+
 void clearInputBuffer()
 {
     int c;
@@ -63,7 +81,7 @@ char *readLineFromConsole()
     return buffer;
 }
 
-char *readLineFromFile(FILE* in)
+char *readLineFromFile(FILE *in)
 {
     char *buffer = NULL;
     int bufsize = 0;
@@ -113,36 +131,42 @@ char *readLineFromFile(FILE* in)
 
 int checkIp(char *ip)
 {
-    int n=0;
-    int j=0;
-    while(j<strlen(ip))
+    int n = 0;
+    int j = 0;
+    while (j < strlen(ip))
     {
-        if(ip[j]=='.')
+        if (ip[j] == '.')
+        {
             n++;
+        }
         j++;
     }
-    if(n!=3)
+    if (n != 3)
+    {
         return 1;
-    j=0;
-    n=0;
-    for (int i = 0; i < 4&&j< (int)strlen(ip); i++)
+    }
+    j = 0;
+    n = 0;
+    for (int i = 0; i < 4 && j < (int) strlen(ip); i++)
     {
 
-        n=0;
-        while(ip[j]!='.'&&ip[j]!='\0')
+        n = 0;
+        while (ip[j] != '.' && ip[j] != '\0')
         {
             n = 10 * n + ip[j] - '0';
             j++;
         }
-        if(n<0||n>255)
+        if (n < 0 || n > 255)
+        {
             return 1;
+        }
     }
     return 0;
 }
 
-void addToFile(FILE* out,char* name,  char *string)
+void addToFile(FILE *out, char *name, char *string)
 {
-    freopen(name,"a+",out);
+    freopen(name, "a+", out);
     fseek(out, 0, SEEK_END);
     fprintf(out, "%s IN ", string);
     int choice;
@@ -155,73 +179,97 @@ void addToFile(FILE* out,char* name,  char *string)
             clearInputBuffer();
         }
         else
+        {
             break;
+        }
     }
 
     if (choice)
     {
+        char *buffer;
         printf("Please, entry main domain name\n");
-        char *buffer = readLineFromConsole();
-        fprintf(out, "CNAME %s\n", buffer);
-        fprintf(out, "%s IN ", buffer);
-        free(buffer);
-        printf("Please, entry the ip of those domains\n");
-        char* ip;
-        while(1)
+        while (1)
         {
-            ip=readLineFromConsole();
-            if(!checkIp(ip))
+            buffer = readLineFromConsole();
+            if (checkIp(buffer))
+            {
+                break;
+            }
+
+            free(buffer);
+        }
+        fprintf(out, "CNAME %s\n", buffer);
+        if (checkInFile(name, buffer))
+        {
+            fprintf(out, "%s IN ", buffer);
+            printf("Please, entry the ip of those domains\n");
+            char *ip;
+            while (1)
+            {
+                ip = readLineFromConsole();
+                if (!checkIp(ip))
+                {
+                    fprintf(out, "A %s\n", ip);
+                    break;
+                }
+                free(ip);
+            }
+            free(ip);
+        }
+        free(buffer);
+    }
+    else
+    {
+        printf("Please, entry the ip of this domain\n");
+        char *ip;
+        while (1)
+        {
+            ip = readLineFromConsole();
+            if (!checkIp(ip))
             {
                 fprintf(out, "A %s\n", ip);
                 break;
             }
             free(ip);
         }
-        free(ip);
     }
-    else
-    {
-        printf("Please, entry the ip of this domain\n");
-        char* buffer=readLineFromConsole();
-        fprintf(out, "A %s\n", buffer);
-    }
-    freopen(out,"r",out);
+    freopen(name, "r", out);
 }
 
-void findDomain(FILE* in, char *ip)
+void findDomain(FILE *in, char *ip)
 {
-    char* buffer;
-    char*answer;
-    int flag=0;
-    fseek(in,0,SEEK_SET);
-    while(!feof(in))
+    char *buffer;
+    char *answer;
+    int flag = 0;
+    fseek(in, 0, SEEK_SET);
+    while (!feof(in))
     {
-        buffer=readLineFromFile(in);
-        if(strstr(buffer,ip)!=NULL&&flag==0)
+        buffer = readLineFromFile(in);
+        if (strstr(buffer, ip) != NULL && flag == 0)
         {
             printf("domain: ");
-            int i=0;
-            while(buffer[i]!=' ')
+            int i = 0;
+            while (buffer[i] != ' ')
             {
                 printf("%c", buffer[i]);
                 i++;
             }
-            answer=(char*)malloc(i*sizeof(char));
-            i=0;
-            while(buffer[i]!=' ')
+            answer = (char *) malloc(i * sizeof(char));
+            i = 0;
+            while (buffer[i] != ' ')
             {
-                answer[i]=buffer[i];
+                answer[i] = buffer[i];
                 i++;
             }
-            answer[i]='\0';
-            flag=1;
-            fseek(in,0,SEEK_SET);
+            answer[i] = '\0';
+            flag = 1;
+            fseek(in, 0, SEEK_SET);
         }
-        if(flag==1&&(strstr(buffer,answer)!=NULL)&&(strstr(buffer,INA)==NULL))
+        if (flag == 1 && (strstr(buffer, answer) != NULL) && (strstr(buffer, INA) == NULL))
         {
             printf("\ndomain: ");
-            int i=0;
-            while(buffer[i]!=' ')
+            int i = 0;
+            while (buffer[i] != ' ')
             {
                 printf("%c", buffer[i]);
                 i++;
@@ -229,38 +277,30 @@ void findDomain(FILE* in, char *ip)
         }
         free(buffer);
     }
-    if(flag==0)
+    if (flag == 0)
+    {
         printf("I don't know this ip\n");
+    }
 }
 
-char *findIp(FILE* in, char *domain, Cache* cache)
+char *findIp(FILE *in, char *domain, Cache *cache)
 {
-    char* answer = get(cache,domain);
-    if(!answer)
+    char *answer = get(cache, domain);
+    if (!answer)
     {
         findInFile(cache, domain, in);
-        answer=get(cache,domain);
+        answer = get(cache, domain);
     }
-    if(!answer) return NULL;
-    if(!checkIp(answer))return answer;
-    else findIp(in,answer,cache);
+    if (!answer) return NULL;
+    if (!checkIp(answer))
+    {return answer;}
+    else
+    {findIp(in, answer, cache);}
     return answer;
 }
-int checkInFile(FILE* in, char* buffer)
-{
-    fseek(in,0,SEEK_SET);
-    char*text;
-    while(!feof(in))
-    {
-        text= readLineFromFile(in);
-        if(strstr(text,buffer)!=NULL)
-            return 0;
-        free(text);
-    }
-    return 1;
-}
 
-void menu(FILE* resource,char* name)
+
+void menu(FILE *resource, char *name)
 {
     Cache *cache = createCache(HASH_TABLE_SIZE);
 
@@ -276,34 +316,53 @@ void menu(FILE* resource,char* name)
                 clearInputBuffer();
             }
             else
+            {
                 break;
+            }
         }
         switch (operation)
         {
             case 1:
             {
-                printf("Input domain name:\n");
-                char *buffer = readLineFromConsole();
-                char* answ=findIp(resource,buffer,cache);
-                if(answ==NULL)
+                char *buffer;
+                while (1)
+                {
+                    printf("Input domain name:\n");
+                    buffer = readLineFromConsole();
+                    if (!checkIp(buffer))
+                    {
+                        continue;
+                    }
+                    break;
+                }
+                char *answ = findIp(resource, buffer, cache);
+                free(buffer);
+                if (answ == NULL)
+                {
                     printf("I don't know this domain\n");
+                }
                 else
-                    printf("Ip:%s\n",answ);
+                {
+                    printf("Ip:%s\n", answ);
+                }
                 break;
             }
             case 2:
             {
 
                 char *buffer;
-                while(1)
+                while (1)
                 {
                     printf("Input ip:\n");
-                     buffer = readLineFromConsole();
-                     if(checkIp(buffer))
-                         continue;
-                     break;
+                    buffer = readLineFromConsole();
+                    if (checkIp(buffer))
+                    {
+                        continue;
+                    }
+                    break;
                 }
-                findDomain(resource,buffer);
+                findDomain(resource, buffer);
+                free(buffer);
                 break;
             }
             case 3:
@@ -313,22 +372,25 @@ void menu(FILE* resource,char* name)
             }
             case 4:
             {
-
-                char* buffer;
-                while(1)
+                char *buffer;
+                while (1)
                 {
                     printf("Input domain name:\n");
                     buffer = readLineFromConsole();
-                    if(checkInFile(resource, buffer))
+                    if (checkInFile(name, buffer) && checkIp(buffer))
+                    {
                         break;
+                    }
                     free(buffer);
                 }
-                addToFile(resource, name,buffer);
+                addToFile(resource, name, buffer);
+                free(buffer);
                 break;
             }
             case 5:
+                destroyCache(cache);
                 return;
         }
     }
-    destroyCache(cache);
+
 }

@@ -53,7 +53,7 @@ HashTable *createHashTable(int size)
 Cache *createCache(int size)
 {
     Cache *cache = (Cache *) malloc(sizeof(Cache));
-    HashTable *hashTable = createHashTable(size * 2);
+    HashTable *hashTable = createHashTable(size);
     List *list = createList(size);
     cache->hashtable = hashTable;
     cache->list = list;
@@ -84,7 +84,6 @@ void removeOldest(Cache *cache) {
     while ((*node) != entry)
         node = &(*node)->next;
     *node = entry->next;
-
     free(entry);
 }
 
@@ -149,31 +148,11 @@ void printCache(Cache *cache)
 
 }
 
-void cacheCorrection(Cache* cache) {
-
-    HashTable* table = cache->hashtable;
-    List* list = cache->list;
-    Node* entry = list->head;
-    if (list->head == NULL) return;
-    if (list->head == list->tail) {
-        list->head = NULL;
-        list->tail = NULL;
-    }
-    else {
-        list->head = entry->next;
-        list->size = list->size - 1;
-        list->head->prev = NULL;
-    }
-    Node** node = &table->values[hashFunction(entry->key, table->capacity)];
-    while ((*node) != entry) node = &(*node)->next;
-    *node = entry->next;
-    free(entry);
-}
 void addToList(Cache *cache, Node *node) {
 
     List *list = cache->list;
 
-    if (list->size == list->capacity) cacheCorrection(cache);
+    if (list->size == list->capacity) removeOldest(cache);
 
     if (list->head == NULL) {
         list->head = list->tail = node;
@@ -226,6 +205,7 @@ void put(Cache *cache, char *key, char *value)
 void findInFile(Cache *cache, char *string, FILE *in)
 {
     char *buffer;
+    char* answer;
     fseek(in, 0, SEEK_SET);
     while (!feof(in))
     {
@@ -236,16 +216,28 @@ void findInFile(Cache *cache, char *string, FILE *in)
             {
                 put(cache,strdup(string),strdup(strrchr(buffer,' ')+1));
                 return;
-            }
+            }else
             if (strstr(buffer, "IN CNAME") != NULL&&strcmp(strrchr(buffer,' ')+1,string)!=0)
             {
-                findInFile(cache, strrchr(buffer, ' ')+1, in);
-                return;
+                answer= strdup(strrchr(buffer,' ')+1);
+                free(buffer);
+                fseek(in,0,SEEK_SET);
+                while(!feof(in))
+                {
+                    buffer = readLineFromFile(in);
+                    if (strstr(buffer, INA) != NULL && strstr(buffer, answer) != NULL)
+                    {
+                        put(cache, strdup(string), strdup(strrchr(buffer, ' ') + 1));
+                        free(buffer);
+                        return;
+                    }
+                    free(buffer);
+                }
+                buffer=answer;
             }
         }
         free(buffer);
     }
-    return;
 }
 
 void destroyCache(Cache *cache)
