@@ -29,7 +29,7 @@ add_executable(lab6.1 term1/lab6/task1/main.c term1/lab6/task1/functions.c term1
 
 add_executable(lab7 term1/lab7/main.c term1/lab7/functions.c term1/lab7/header.h)
 
-add_executable(lab8 term1/lab8/main.c term1/lab8/functions.c term1/lab8/header.h)
+#add_executable(lab8 term1/lab8/main.c term1/lab8/functions.c term1/lab8/header.h)
 
 #add_executable(parsing term2/lab1/main.c term2/lab1/functions.c term2/lab1/functions.h term2/lab1/sorts.c term2/lab1/sorts.h term2/lab1/basket.txt)
 
