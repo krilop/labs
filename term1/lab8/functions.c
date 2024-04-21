@@ -3,7 +3,7 @@
 void copyArray(char **resouce, char **result, int howManyStrings)
 {
     for (int i = 0; i < howManyStrings; i++)
-        for (int j = 0; j < getLength(resouce, i); j++)
+        for (int j = 0; j < getLength(resouce[i]); j++)
             *(*(result + i) + j) = *(*(resouce + i) + j);
 }
 
@@ -19,48 +19,38 @@ void deleteFirstString(char **arr, int howManyStrings)
         *(arr + i) = *(arr + i + 1);
 }
 
-int getLength(char **s, int posOfString)
+int getLength(char *s)
 {
     int cnt = 0, i = 0;
-    while (*(*(s + posOfString) + i) != '\0') {
+    while (*(s + i) != '\0') {
         cnt++;
         i++;
     }
     return cnt + 1;
 }
 
-void merge(char **arr, int first, int last)
+void mergeSort(char** a, int l, int r)  //Сортирока слиянием без доп массива
 {
-    int middle, start, end, j;
-    //int* mas = new int[100];
-    char **tmp = (char **) malloc((last) * sizeof(char *));
-    for (int i = 0; i < first; i++)
-        *(tmp + i) = *arr;
-    middle = (first + last) / 2; //���������� �������� ��������
-    start = first; //������ ����� �����
-    end = middle + 1; //������ ������ �����
-    for (j = first; j <= last; j++) //��������� �� ������ �� �����
-        if ((start <= middle) && ((end > last) || (getLength(arr, start) > getLength(arr, end)))) {
-            *(tmp + j) = *(arr + start);
-            start++;
-        } else {
-            *(tmp + j) = *(arr + end);
-            end++;
+    int m = (l + r) / 2;
+    if (l == r)
+        return;
+    mergeSort(a, l, m);
+    mergeSort(a, m + 1, r);
+    int i = l, j = m + 1, k;
+    char* el;
+    while (i <= m && j <= r)
+    {
+        if (getLength(a[j]) > getLength(a[i]))
+        {
+            el = a[j];
+            for (k = j; k > i; k--)
+                a[k] = a[k - 1];
+            a[i] = el;
+            m++;
+            i++;
+            j++;
+            continue;
         }
-    //����������� ���������� � ������
-    for (j = first; j <= last; j++)
-        *(arr + j) = *(tmp + j);
-    for (int i = 0; i < last; ++i)
-        free(*(tmp + i));
-    free(tmp);
-};
-
-//����������� ��������� ����������
-void mergeSort(char **arr, int first, int last)
-{
-    if (first < last) {
-        mergeSort(arr, first, (first + last) / 2); //���������� ����� �����
-        mergeSort(arr, (first + last) / 2 + 1, last); //���������� ������ �����
-        merge(arr, first, last); //������� ���� ������
+        i++;
     }
-};
+}
