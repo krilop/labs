@@ -1,7 +1,3 @@
-//
-// Created by krilop on 3/22/23.
-//
-
 #ifndef _FUNCTIONSFORDECOMPRESSING_H_
 #define _FUNCTIONSFORDECOMPRESSING_H_
 

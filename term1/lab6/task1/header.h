@@ -21,7 +21,6 @@ void power(int *multiple, int a, int b);
 
 void findInd(int *parr, int length, int *ind);
 
-//void stepOfShell(int* step, int length, int* count);
 void sortShell(int *parr, int length, int indFirstPositive);
 
 void sortBubble(int *parr, int length, int indFirstPositive);

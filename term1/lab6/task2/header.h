@@ -15,7 +15,7 @@ void printArr(int **parr, int str, int col);
 
 void printProductOfStr(int **arr, int str, int col);
 
-int productOfNegativeElements(int **arr, int numOfString, int lengthOfString);
+int productOfNegativeElements(int *arr, int lengthOfString);
 
 void mergeSort(int **arr, int left, int right, int lengthOfString);
 

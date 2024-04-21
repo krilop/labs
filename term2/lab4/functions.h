@@ -1,7 +1,3 @@
-//
-// Created by krilop on 4/28/23.
-//
-
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
 

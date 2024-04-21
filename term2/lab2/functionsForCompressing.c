@@ -1,7 +1,3 @@
-//
-// Created by krilop on 3/22/23.
-//
-
 #include "functionsForCompressing.h"
 
 #define SIZE_OF_STRING 700
@@ -11,7 +7,7 @@ void pushInStack(stack **head, char *word)
     stack *tmp;
     tmp = (stack *) malloc(sizeof(stack));
     if (tmp == NULL) exit(EXIT_FAILURE);
-    tmp->word = (char *) malloc(sizeof(char) * (strlen(word) + 1));//!!!!!!Проверить эту единицу
+    tmp->word = (char *) malloc(sizeof(char) * (strlen(word) + 1));
     strcpy(tmp->word, word);
     tmp->next = NULL;
     if (*head == NULL)
@@ -105,7 +101,6 @@ void putWordsInArray(stack **head, words **arrayOfWords, int *size)
 
         buffer = (char *) realloc(buffer, sizeof(char) * (1 + strlen((*head)->word)));
         strcpy(buffer, (*head)->word);
-        // (*arrayOfWords)[i - 1].word = (char *) malloc(sizeof(char) * strlen((*arrayOfWords)[i - 1].word));
 
         for (int j = 0; j < i + 1; j++)
         {
@@ -198,21 +193,6 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
                 continue;
             }
                 profit = calculateProfit(arr,i,size-i);
-                /*if (profit > max)
-                {
-                    max = profit;
-
-                    tmp1.word = (char *) realloc(tmp1.word, sizeof(char) * (1 + (*arr)[i].length));
-                    strcpy(tmp1.word, (*arr)[i].word);
-                    tmp1.count = (*arr)[i].count;
-                    tmp1.length = (*arr)[i].length;
-                    indFirstWord = i;
-                    tmp2.word = (char *) realloc(tmp2.word, sizeof(char) * (1 + (*arr)[size-i].length));
-                    strcpy(tmp2.word, (*arr)[size-i].word);
-                    tmp2.count = (*arr)[size-i].count;
-                    tmp2.length = (*arr)[size-i].length;
-                    indSecondWord = ;
-                }*/
             if (profit > 0)
             {
                 (*countOfPairs)++;
@@ -225,7 +205,6 @@ void pair(words **arr, int size, pairs **newArr, int *countOfPairs)
                 (*arr)[i].markAsUsed = 1;
                 (*arr)[size-i].markAsUsed = 1;
             }
-           // printf("%d\n",(int)(i*100/size));
         }
 
 

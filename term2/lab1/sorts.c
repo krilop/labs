@@ -1,7 +1,3 @@
-//
-// Created by krilop on 2/24/23.
-//
-// попробуем сделать через компаратор.
 #include "sorts.h"
 void sortStart(t *array, int sizeOfArray)
 {
@@ -14,7 +10,6 @@ void sortStart(t *array, int sizeOfArray)
     switch (select) {
         case 0:
             return;
-            break;
         case 1:
             sort(array, sizeOfArray, comprNum);
             break;
@@ -56,7 +51,6 @@ void sort(t *array, int sizeOfArray, int (*function)(t *array, int indFirst, int
     switch (select) {
         case 0:
             return;
-            break;
         case 1:
             secondSort(array, sizeOfArray, (*function),comprNum );
             break;

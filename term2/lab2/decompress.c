@@ -1,6 +1,3 @@
-//
-// Created by krilop on 3/22/23.
-//
 #include "functionsForDecompressing.h"
 int main(void)
 {

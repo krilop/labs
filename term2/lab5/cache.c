@@ -1,7 +1,3 @@
-//
-// Created by krilop on 5/26/23.
-//
-
 #include "cache.h"
 #include "functions.h"
 

@@ -1,4 +1,3 @@
-/*����� � ������� ������ �������, ��� �������� �������� ����� ����. ����� ��������� ������ � ����� �� ������� �������� �� ���������������.*/
 #include "header.h"
 
 int main()
@@ -15,7 +14,6 @@ int main()
         inputLengthOfArray(&col);
         inputMatr(array1, &row, &col);
         printMatr(array1, &row, &col);
-        //������� ������
         int indOfColZero = -1;
         int flagForZero = 0;
         for (int i = 0; i < col; i++) {

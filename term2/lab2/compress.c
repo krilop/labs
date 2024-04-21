@@ -1,6 +1,3 @@
-//
-// Created by krilop on 3/22/23.
-//
 #include "functionsForCompressing.h"
 
 int main(void)

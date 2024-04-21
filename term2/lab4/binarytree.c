@@ -5,7 +5,6 @@ node *newNode(char *value)
     node *tmp = (node *) malloc(sizeof(node));
     (*tmp).question = (char*)calloc(strlen(value)+1, sizeof(char));
     (*tmp).question=strcpy((*tmp).question,value);
-   // (*tmp).question[strlen(value)]='\0';
     (*tmp).left = NULL;
     (*tmp).right = NULL;
     (*tmp).height=0;
@@ -40,7 +39,7 @@ int getBalance(node* root)
 }
 void swap(node* a, node* b)
 {
-    char* tmp=(char*)malloc((1+strlen((*a).question))*sizeof(char));
+    char* tmp;
     tmp=strdup((*a).question);
     (*a).question=(char*)realloc((*a).question,1+strlen((*b).question));
     (*a).question=strdup((*b).question);

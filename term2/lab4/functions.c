@@ -1,7 +1,3 @@
-//
-// Created by krilop on 4/28/23.
-//
-
 #include "functions.h"
 
 #define SIZE_OF_STRING 256

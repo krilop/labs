@@ -7,7 +7,6 @@ int main()
     int num3;
     printf("Enter three numbers on the line:");
     while (scanf_s("%d %d %d", &num1, &num2, &num3) == 3 || getchar() != '\n') {
-        //printf("%d\t %d\t %d\t", a, b, num3);
         printf("Uncorrect input");
         rewind(stdin);
     }

@@ -1,6 +1,3 @@
-/*
-15.	� ������� �� n ��������� ���������� �������� ��� ������ �������� �� k �����. �������� �������� �� ����� ������
-*/
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -33,23 +30,16 @@ int main()
             rd = sign * rand() % 1000000;
             array[i] = rd;
         } else
-            while (scanf_s("%d", &array[i]) != 1)//�������� �� ����
+            while (scanf_s("%d", &array[i]) != 1)
             {
                 printf("try again\n");
                 rewind(stdin);
             }
     for (int i = 0; i < n; i++)
         printf("%d\t", array[i]);
-    //����� ������ ���������
-    /*
-    1) ������ ������ ������ ������� done
-    2) ����� ��������� ������ ������� � ������� ��� � ������ ������ �������� ����� ����������. ��� �� ����� ������� done
-    3) ��������� ������� ���������� � ����������� � ������ ������ done
-    4) ������� ���� �� ���-�� ���������� done
-    */
     printf("enter shift ");
     int k;
-    while (scanf_s("%d", &k) != 1 || k < 0)//�������� �� ����
+    while (scanf_s("%d", &k) != 1 || k < 0)
     {
         printf("try again\n");
         rewind(stdin);

@@ -1,4 +1,3 @@
-//15.	���� �����������  �����  n.��������, ����� �� ����������� n != 1 * 2 * 3*...*n � ���� ������������ ��� ���������������� ����� �����.
 #include <stdio.h>
 
 int main()
@@ -11,7 +10,6 @@ int main()
         printf("Uncorrect input");
         rewind(stdin);
     }
-    //������� ���������
     for (int i = 1; i - 1 < n; i++)
         factorial = factorial * i;
     int i;

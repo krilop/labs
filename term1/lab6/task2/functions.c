@@ -44,7 +44,6 @@ void printArr(int **parr, int str, int col)
     printf("\n");
 }
 
-/*строк по возрастанию произведения отрицательных элементов*/
 int productOfNegativeElements(int *arr, int lengthOfString)
 {
     int flag = 0;

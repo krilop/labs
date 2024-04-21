@@ -1,7 +1,3 @@
-//
-// Created by krilop on 5/26/23.
-//
-
 #ifndef _CACHE_H_
 #define _CACHE_H_
 

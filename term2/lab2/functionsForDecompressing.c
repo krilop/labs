@@ -1,7 +1,3 @@
-//
-// Created by krilop on 3/22/23.
-//
-
 #include "functionsForDecompressing.h"
 
 #define SIZE_OF_STRING 500

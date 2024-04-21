@@ -3,7 +3,6 @@
 #define EXIT_FILE_OPEN_ERROR 1
 #define EXIT_COUNT_OF_ARGS_ERROR 2
 #define EXIT_UNCORRECT_FORMAT_ERROR 3
-#define EXIT_MEMORY_ALLOCATION_ERROR 4
 
 int main(int argc, char **argv)
 {

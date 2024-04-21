@@ -1,6 +1,4 @@
-/*1.	� ���������� ������� ��������� ���������� ��������� ������������� ����� ������� �������������� ������� �����
-��� 1-� ������ ���������� �������� ����� ���������� ���������� � �������� �/��� ������������� (��������� ����� �� ������� �������� ������� � 1000, 10000). 
-� �������� ��������� ������� ���������� � ������ �������� �� ��� �����, ��������, ���������. ����� ����������� ������� ������ (������ ������������ � �������� �������).*/
+
 #include "header.h"
 
 int main()
@@ -24,8 +22,6 @@ int main()
             inputArr(parr, length);
         parr2 = (int *) realloc(parr2, length * sizeof(int));
         copyArr(parr2, parr, length);
-        //printArr(parr, length);
-        //printArr(parr2, length);
         int indFirstPositive = -1;
         findInd(parr, length, &indFirstPositive);
         if (indFirstPositive == -1)
@@ -40,9 +36,7 @@ int main()
             sortBubble(parr2, length, indFirstPositive);
             end = clock();
             float result2 = (float) (end - start) / CLOCKS_PER_SEC;
-            //printArr(parr, length);
-            //printArr(parr2, length);
-            printf("time of sort first:%f\ntime of sort Bubble:%f\n", result1, result2);/*time of sort first:%f\n*/
+            printf("time of sort first:%f\ntime of sort Bubble:%f\n", result1, result2);
         }
         printf("Do u want to run app again?(yes-1, no-0)");
         reset(&restart);

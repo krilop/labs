@@ -29,7 +29,7 @@ int getLength(char *s)
     return cnt + 1;
 }
 
-void mergeSort(char** a, int l, int r)  //Сортирока слиянием без доп массива
+void mergeSort(char** a, int l, int r)
 {
     int m = (l + r) / 2;
     if (l == r)

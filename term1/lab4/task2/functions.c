@@ -13,7 +13,7 @@ int **memory(int N)
     int **mas;
     mas = (int **) calloc(N, sizeof(int *));
     for (int i = 0; i < N; i++)
-        mas[i] = (int *) calloc(N, sizeof(int)); //*(mas + i)
+        mas[i] = (int *) calloc(N, sizeof(int));
     return mas;
 }
 

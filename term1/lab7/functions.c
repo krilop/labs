@@ -16,7 +16,6 @@ void chooseTask(int *choice)
         printf("Error! Try again\n");
         rewind(stdin);
     }
-    // system("CLS");
     printf("task %d:\n", *choice);
 }
 
@@ -143,7 +142,6 @@ void inputNum(int *num, int border)
 
 void main2()
 {
-    //2.	���� ������ S, S0 � ����� k, m. �������� c k-�� ������� ������ S ������ m �������� �� ������ S0
     char **pstr1 = (char **) malloc(sizeof(char *));
     *pstr1 = (char *) malloc(sizeof(char));
     int length1 = 1;

@@ -1,7 +1,3 @@
-//
-// Created by krilop on 12.02.23.
-//
-
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
 
@@ -54,14 +50,7 @@ typedef struct {
     unsigned char green;
     unsigned char blue;
 } pixelBitMap;
-/*
-typedef struct {
-    unsigned char blue;
-    unsigned char green;
-    unsigned char red;
-    unsigned char reserved;
-} paletteBitMap;
- */
+
 #pragma pack(pop)
 
 int checkBitCount(infoHeaderBitMap info, int *lessThanEight);
@@ -79,6 +68,6 @@ void wnb(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *result
 void negative(FILE **in, headerFileBitMap header, infoHeaderBitMap info, char *resultName);
 
 char *formName(char *nameOfFile, char *add);
-//void wnb(FILE** in, headerFileBitMap header, infoHeaderBitMap info, char* resultName);
+
 
 #endif //_FUNCTIONS_H_

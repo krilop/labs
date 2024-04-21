@@ -1,5 +1,4 @@
 #include "functions.h"
-#include "sorts.h"
 int main(void)
 {
     setlocale(LC_ALL, "Rus");
@@ -17,7 +16,6 @@ int main(void)
     parsing(&arr, in, &sizeOfArray);
 
     menu(&arr, &sizeOfArray);
-    //free(arr);
     return 0;
 
 }

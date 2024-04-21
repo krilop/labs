@@ -1,7 +1,3 @@
-//
-// Created by krilop on 2/24/23.
-//
-
 #ifndef _SORTS_H_
 #define _SORTS_H_
 #include "functions.h"

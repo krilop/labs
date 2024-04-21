@@ -1,7 +1,3 @@
-//
-// Created by krilop on 12.02.23.
-//
-
 #include "functions.h"
 
 #define END_OF_PROGRAMM 5

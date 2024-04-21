@@ -68,28 +68,6 @@ void power(int *multiple, int a, int b)
     *multiple = a;
 }
 
-//void stepOfShell(int* step, int length, int* count)
-//{
-//	int multiple1, multiple2;
-//	if (*count % 2 == 0)
-//	{
-//		power(&multiple1, 2, *count);
-//		power(&multiple2, 2, * count / 2);
-//		*step = 9 * multiple1 - 9 * multiple2+1;
-//	}
-//	else
-//	{	
-//		power(&multiple1, 2, *count);
-//		power(&multiple2, 2, (*count + 1) / 2);
-//		*step = 8 * multiple1 - 6 * multiple2 + 1;
-//	}
-//	
-//	*count-=1;
-//	if (*count < 0)
-//		*step = -1;
-//	if (*step > length / 2)
-//		stepOfShell(step, length, count);
-//}
 void swap(int *a, int *b)
 {
     int tmp = *a;

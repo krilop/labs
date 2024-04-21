@@ -1,12 +1,10 @@
-//��������� �������� ������� ����������� ax^2+bx+c<0.
 #include <stdio.h>
 #include <math.h>
 
 float min(float a, float b);
 
 float max(float a, float b);
-
-//float root(float a);
+;
 float tmp(float a);
 
 int main()

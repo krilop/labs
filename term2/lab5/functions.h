@@ -1,7 +1,3 @@
-//
-// Created by krilop on 5/6/23.
-//
-
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
 #define STRING 255
