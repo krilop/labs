@@ -11,9 +11,7 @@ void printArray(char **arr, int howManyStrings);
 
 void deleteFirstString(char **arr,
                        int howManyStrings);//����� ������� ����� �������, �������� ��������� ���� ����������� � ������, � �� �� �����
-int getLength(char **s, int posOfString);
-
-void merge(char **arr, int first, int last);
+int getLength(char *s);
 
 void mergeSort(char **arr, int first, int last);
 
